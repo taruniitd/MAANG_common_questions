@@ -1,0 +1,27 @@
+//https://coderbyte.com/algorithm/two-sum-problem#:~:text=The%20two%20sum%20problem%20is,in%20O(n)%20time.
+//https://github.com/ombharatiya/FAANG-Coding-Interview-Questions#amazon
+//https://leetcode.com/problems/two-sum/
+#include <iostream>
+using namespace std;
+
+vector<pair<int,int>> twoSum(vector<int>& inArr, int num, int target)
+{
+    unordered_map<int,int> mapCur;
+    
+    for(int i = 0; i < num; i++)
+    {
+        for(auto iter = mapCur.find(inArr[i]); iter != mapCur.end(); iter++))
+        {
+            mapCur.insert(inArr[i]);
+        }
+    }
+}
+
+int main() {
+	// your code goes here
+    vector<int> inArr = { 1, 4, 2, 6, 9, 7, 3 };
+    int n = sizeof(inArr) / sizeof(inArr[0]);
+    int target = 12;
+    vector<pair<int,int>> twoSum(inArr, n, target);
+	return 0;
+}
