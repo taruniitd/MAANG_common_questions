@@ -31,6 +31,24 @@ vector<pair<int,int>> twoSum(vector<int>& inArr, int num, int target)
     return finalVec;
 }
 
+vector<pair<int,int>> twoSumBrute(vector<int>& inArr, int num, int target)
+{
+    vector<pair<int, int>> finalVec;
+    for(int outLoop = 0; outLoop < num; outLoop++)
+    {
+        for(int inLoop = outLoop; inLoop < num; inLoop++ )
+        {
+            if((inArr[outLoop] + inArr[inLoop]) == target)
+            {
+                if(inLoop == outLoop)
+                    continue;
+                finalVec.emplace_back(outLoop,inLoop);
+            }
+        }
+    }
+    return finalVec;
+}
+
 int main() {
 	// your code goes here
     vector<int> inArr = { 1, 4, 2, 6, 9, 7, 3 , 6};
@@ -43,6 +61,14 @@ int main() {
     {
         cout << "Below are elements whose sum is equal to target " << endl;
         cout <<  (*vecElem).first + 1 << "and" << (*vecElem).second + 1<< endl;
+    }
+    
+    cout << "use Brute force approach " << endl;
+    std::vector<pair<int,int>> pairVecNew = twoSumBrute(inArr, inArr.size(), target);
+    for(auto vecElem1 = pairVecNew.begin(); vecElem1 != pairVecNew.end(); ++vecElem1)
+    {
+        cout << "Below are elements whose sum is equal to target " << endl;
+        cout <<  (*vecElem1).first + 1 << "and" << (*vecElem1).second + 1<< endl;
     }
 	return 0;
 }
