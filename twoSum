@@ -16,11 +16,12 @@ vector<pair<int,int>> twoSum(vector<int>& inArr, int num, int target)
         
         for(auto iter = mapCur.find(target - inArr[i]); iter != mapCur.end(); iter++)
         {
-            cout << "matching sum ? " << endl;
+            cout << "matching sum ? " << "first = " << iter->second << " index = " << i << endl;
             pairCur.first = iter->second;
             pairCur.second = i;
             //finalVec.emplace_back()
             finalVec.push_back(pairCur);
+            break;
         }
         cout << "Inserted in map val : " << inArr[i] << " index = " << i << endl; 
         mapCur.insert(make_pair(inArr[i], i));
@@ -34,13 +35,14 @@ int main() {
 	// your code goes here
     vector<int> inArr = { 1, 4, 2, 6, 9, 7, 3 , 6};
     int n = sizeof(inArr) / sizeof(inArr[0]);
+    cout << "n = " << n << " size = " << inArr.size() << endl;
     int target = 12;
-    vector<pair<int,int>> pairVec = twoSum(inArr, n, target);
+    vector<pair<int,int>> pairVec = twoSum(inArr, inArr.size(), target);
     
     for(auto vecElem = pairVec.begin(); vecElem != pairVec.end(); ++vecElem)
     {
         cout << "Below are elements whose sum is equal to target " << endl;
-        cout <<  (*vecElem).first  << "and" << (*vecElem).second << endl;
+        cout <<  (*vecElem).first + 1 << "and" << (*vecElem).second + 1<< endl;
     }
 	return 0;
 }
