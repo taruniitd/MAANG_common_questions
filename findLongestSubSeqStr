@@ -1,0 +1,48 @@
+//https://www.geeksforgeeks.org/length-of-the-longest-substring-without-repeating-characters/
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool findLongestSubSeqStr(string str, int outRefIndex, int curIndex)
+{
+    vector<bool> vecAllChar(26, false);
+    for(int refIndex = outRefIndex; refIndex <= curIndex; refIndex++)
+    {
+        if(vecAllChar[str[refIndex] - 'a'] == true)
+            return false;
+            
+        vecAllChar[str[refIndex] - 'a'] = true;
+    }
+    return true;
+}
+int main()
+{
+    string str = "geeksforgeeks";
+    int maxSubLen = 0, curSubLen = 0;
+    pair<int,int> subStrIndexes;
+    for(int outLoop = 0; outLoop < str.length(); outLoop++)
+    {
+        cout << "outLoop = " << outLoop << endl;
+        for(int inLoop = outLoop; inLoop < str.length(); inLoop++)
+        {
+            if(findLongestSubSeqStr(str, outLoop, inLoop)  == true)
+            {
+                curSubLen = inLoop - outLoop + 1;
+                if(curSubLen > maxSubLen)
+                {
+                    maxSubLen = curSubLen;
+                    //subStrIndexes.emplace_back(outLoop,inLoop);
+                    subStrIndexes = make_pair(outLoop,inLoop -1);
+                }
+            }
+            else
+            {
+                cout << "break outLoop = " << outLoop << "inLoop = " << inLoop << endl;
+                break;
+            }
+        }
+    }
+    cout << "maxSubLen for cur string = " << maxSubLen << endl;
+    cout << "longest substr : " << str.substr(subStrIndexes.first, subStrIndexes.second);
+    return 0;   
+}
