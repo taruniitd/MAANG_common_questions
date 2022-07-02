@@ -2,6 +2,7 @@
 //https://www.geeksforgeeks.org/longest-palindrome-substring-set-1/
 #include <iostream>
 #include <string.h>
+#include <unordered_map>
 using namespace std;
 
 void printPalindromeString(string str, int start, int last)
@@ -80,11 +81,55 @@ void findLongestPalindromeStrBrute(string str, int n)
     cout << "current palindrome length using DP : " << maxlength << endl;
     return;// maxlength;
 }
+
+void longestPalindrome(string str, int start, int end, string& outPalinStr, int& outPalinStrLen)
+{
+    bool flag = true;
+    int st = start, en = end;
+    cout << "start = " << start << "end = " << end << endl;
+    while(start <= end)
+    {
+        if(str[start++] != str[end--])
+        {
+            flag = false;
+        }
+    }
+    
+    if(flag)
+    {
+        outPalinStr = str.substr(st,en - st + 1);
+        if(outPalinStrLen > outPalinStr.size())
+            outPalinStrLen = outPalinStr.size();
+    }
+}
+
+void findLongestPalindromeStrUsingMap(string str, int n)
+{
+    unordered_map<char,int> charMap;
+    int outPalinStrLen = 1;
+    string outPalinStr;
+    
+    for(int i = 0; i < n; i++)
+    {
+        charMap[str[i]] = i; 
+    }
+    
+    for(int i = 0; i < n; i++)
+    {
+        longestPalindrome(str, i, charMap[str[i]], outPalinStr, outPalinStrLen);
+    }
+    cout << "current palindrome length using Map : " << outPalinStrLen << endl;
+}
 int main() {
 	string str = "forgeeksskeegfor";
 	int len = str.length();
 	findLongestPalindromeStrUsingDP(str, len);
-	
+    str = "forgeeksskeegfor";
+	len = str.length();
 	findLongestPalindromeStrBrute(str,len);
+	str = "forgeeksskeegfor";
+	len = str.length();
+	findLongestPalindromeStrUsingMap(str, len);
+	
 	return 0;
 }
