@@ -1,12 +1,22 @@
+//https://www.youtube.com/watch?v=UflHuQj6MVA
+//https://www.geeksforgeeks.org/longest-palindrome-substring-set-1/
 #include <iostream>
 #include <string.h>
 using namespace std;
 
-int findLongestPalindromeStrUsingDP(string str, int n)
+void printPalindromeString(string str, int start, int last)
+{
+    cout << "str = " <<"  ";
+    for(int i = start; i <= last; i++)
+        cout << str[i];
+    cout << endl;
+}
+
+void findLongestPalindromeStrUsingDP(string str, int n)
 {
     bool table[n][n];
     memset(table, 0, sizeof(table));
-    
+    int start = 0;
     int maxlength = 1;
     
     for(int i = 0; i < n; i++)
@@ -17,6 +27,7 @@ int findLongestPalindromeStrUsingDP(string str, int n)
         if(str[i] == str[i+1])
         {
             table[i][i+1] = 1;
+            start = i;
             maxlength = 2;
         }
     }
@@ -31,33 +42,49 @@ int findLongestPalindromeStrUsingDP(string str, int n)
                 
                 if(k > maxlength)
                 {
+                    start = i;
                     maxlength = k;
                 }
             }    
         }
     }
-    return maxlength;
+    cout << " current palindrome length : " << maxlength << endl;
+    printPalindromeString(str, start, start + maxlength - 1);
+    return;// maxlength;
 }
 
-int findLongestPalindromeStrBrute(string str, int n)
+void findLongestPalindromeStrBrute(string str, int n)
 {
+    int maxlength = 1, start = 0;
+    int flag = 1;
     for(int i = 0; i < n -1; i++)
     {
         for(int j = i; j < n -1; j++)
         {
+            flag = 1;
             for(int k = 0; k < ((j - i + 1) / 2); k++)
             {
                 if(str[i+k] != str[j - k])
                 {
-                    
+                    flag = 0;
                 }
+            }    
+            if(flag && (j - i) > maxlength)
+            {
+                start = i;
+                maxlength = j -i + 1;
             }
         }
     }
+    printPalindromeString(str, start, start + maxlength -1);
+    cout << "current palindrome length using DP : " << maxlength << endl;
+    return;// maxlength;
 }
 int main() {
 	string str = "forgeeksskeegfor";
 	int len = str.length();
-	cout << " current palindrome length : " << findLongestPalindromeStrUsingDP(str, len);
+	findLongestPalindromeStrUsingDP(str, len);
+	
+	findLongestPalindromeStrBrute(str,len);
 	return 0;
 }
