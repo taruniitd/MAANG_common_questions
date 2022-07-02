@@ -1,0 +1,63 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+int findLongestPalindromeStrUsingDP(string str, int n)
+{
+    bool table[n][n];
+    memset(table, 0, sizeof(table));
+    
+    int maxlength = 1;
+    
+    for(int i = 0; i < n; i++)
+        table[i][i] = 1;
+        
+    for(int i = 0; i < n - 2; i++)
+    {
+        if(str[i] == str[i+1])
+        {
+            table[i][i+1] = 1;
+            maxlength = 2;
+        }
+    }
+    for(int k = 3; k < n-1; k++)
+    {
+        for(int i = 0; i < n - k + 1; i++)
+        {
+            int j = i + k -1;
+            if((table[i+1][j-1] == 1) && (str[i] == str[j]))
+            {
+                table[i][j] = 1;
+                
+                if(k > maxlength)
+                {
+                    maxlength = k;
+                }
+            }    
+        }
+    }
+    return maxlength;
+}
+
+int findLongestPalindromeStrBrute(string str, int n)
+{
+    for(int i = 0; i < n -1; i++)
+    {
+        for(int j = i; j < n -1; j++)
+        {
+            for(int k = 0; k < ((j - i + 1) / 2); k++)
+            {
+                if(str[i+k] != str[j - k])
+                {
+                    
+                }
+            }
+        }
+    }
+}
+int main() {
+	string str = "forgeeksskeegfor";
+	int len = str.length();
+	cout << " current palindrome length : " << findLongestPalindromeStrUsingDP(str, len);
+	return 0;
+}
