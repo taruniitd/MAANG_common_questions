@@ -86,7 +86,7 @@ void longestPalindrome(string str, int start, int end, string& outPalinStr, int&
 {
     bool flag = true;
     int st = start, en = end;
-    cout << "start = " << start << "end = " << end << endl;
+    //cout << "start = " << start << "end = " << end << endl;
     while(start <= end)
     {
         if(str[start++] != str[end--])
@@ -97,9 +97,13 @@ void longestPalindrome(string str, int start, int end, string& outPalinStr, int&
     
     if(flag)
     {
-        outPalinStr = str.substr(st,en - st + 1);
-        if(outPalinStrLen > outPalinStr.size())
+        //cout << "update new str length start : " << st << "  " << "end = " << en << endl;
+        string temp = str.substr(st,en - st + 1);
+        if(outPalinStrLen < temp.size())
+        {
+            outPalinStr = temp;
             outPalinStrLen = outPalinStr.size();
+        }
     }
 }
 
@@ -118,7 +122,7 @@ void findLongestPalindromeStrUsingMap(string str, int n)
     {
         longestPalindrome(str, i, charMap[str[i]], outPalinStr, outPalinStrLen);
     }
-    cout << "current palindrome length using Map : " << outPalinStrLen << endl;
+    cout << "current palindrome str = " << outPalinStr <<" using map  and length : " << outPalinStrLen << endl;
 }
 int main() {
 	string str = "forgeeksskeegfor";
