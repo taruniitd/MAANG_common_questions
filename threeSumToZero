@@ -1,0 +1,78 @@
+//https://www.geeksforgeeks.org/find-triplets-array-whose-sum-equal-zero/
+#include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+using namespace std;
+
+void threeSumBrute(int arr[], int n, int target)
+{
+    for(int i = 0; i < n - 3; i++)
+    {
+        for(int j = i + 1; j < n - 2; j++)
+        {
+            for(int k = j + 1; k < n - 1; k++)
+            {
+                if((arr[i] + arr[j] + arr[k]) == target)
+                {
+                    cout << "found three sum  with i = " << i << "with j = " << j << "with k = " << k << endl;
+                }
+            }
+        }
+    }
+}
+
+/**void threeSumUsingMap(int arr[], int n, int target)
+{
+    unordered_map<int,pair<int,int> > cur_map;
+    
+    for(int i = 0; i < n - 1; i++)
+    {
+        for(int j = i + 1; j < n; j++)
+        {
+            int x = -(arr[i] + arr[j]);
+            for(auto iter = cur_map.find(x); iter != cur_map.end();iter++)
+            {
+                int k = iter->first;
+                cout << "found three sum Map with i = " << i << "with j = " << k << "with k = " << j << endl;
+                break;
+            }
+            //cur_map[x] = make_pair(j,arr[j]);
+            cout << " insert i = " << i << " j = " << j << " x = " << x << endl;
+            cur_map.insert(make_pair(x,make_pair(j,arr[j])));
+        }
+    }
+}*/
+
+void threeSumUsingSet(int arr[], int n, int target)
+{
+    unordered_set<int> cur_set;
+    bool isFound = false;
+    for(int i = 0; i < n - 1; i++)
+    {
+        for(int j = i + 1; j < n; j++)
+        {
+            int x = -(arr[i] + arr[j]);
+            if(cur_set.find(x) != cur_set.end())
+            {
+                cout << "three sum found with val = " << arr[i] << "and= " << arr[j] << "and = " << x << endl;
+                isFound = true;
+            }
+            else
+                cur_set.insert(arr[j]);
+        }
+    }
+    if(!isFound)
+        cout << " No triplet found" << endl;
+}
+
+int main() {
+	int arr[] = { -1, 0, 1, 2, -1 ,4 };
+	int size = sizeof(arr) / sizeof(arr[0]);
+	
+	threeSumBrute(arr,size, 0);
+	cout << "try next method " << endl;
+	int arr1[] = { -1, 0, 1, 2, -1 ,4 };
+	int size1 = sizeof(arr1) / sizeof(arr1[0]);
+	threeSumUsingSet(arr1, size1, 0);
+	return 0;
+}
