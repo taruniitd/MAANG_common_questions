@@ -1,0 +1,39 @@
+//https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/
+#include <iostream>
+#include <stack>
+using namespace std;
+
+bool isValidParenthesis(string exp_str)
+{
+    std::stack<char> stack_ch;
+    //char* ptr_exp = 
+    for(int i = 0; i < exp_str.length(); i++)
+    {
+        if(stack_ch.empty())
+        {
+            stack_ch.push(exp_str[i]);
+        }
+        else if (((stack_ch.top() == '(') && (exp_str[i] == ')')) ||
+            ((stack_ch.top() == '{') && (exp_str[i] == '}')) ||
+            ((stack_ch.top() == '[') && (exp_str[i] == ']')))
+        {
+            stack_ch.pop();
+        }
+        else
+        {
+            stack_ch.push(exp_str[i]);
+        }
+   }
+    if(stack_ch.empty())
+        return true;
+    return false;
+}
+int main()
+{
+    string exp = "{[]})";//"({[]})";
+    if(isValidParenthesis(exp))
+        cout << "current expression is valid" << endl;
+    else
+        cout << "current expression is not valid" << endl;
+    return 0;
+}
