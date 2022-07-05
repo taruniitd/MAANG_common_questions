@@ -1,0 +1,130 @@
+//https://www.geeksforgeeks.org/delete-nth-node-from-the-end-of-the-given-linked-list/
+#include <iostream>
+using namespace std;
+
+typedef struct node
+{
+    int data;
+    node* next;
+    
+    node(int val)
+    {
+        data = val;
+        next = nullptr;
+    }
+} node;
+
+void push_node(node** root_node, int val)
+{
+    node* temp = new node(val);
+    temp->next = *root_node;
+    *root_node = temp;
+    return;
+}
+
+void deleteNthCodeBrute(node** root_node, int N)
+{
+    int lengthList = 0;
+    node* cur_node = *root_node;
+    while(cur_node != nullptr)
+    {
+        lengthList++;
+        cur_node = cur_node->next;
+    }
+    cur_node = *root_node;
+    if(lengthList > N)
+    {
+        int lenFromBegin = lengthList - N + 1;
+        while(lenFromBegin > 2)
+        {
+            lenFromBegin--;
+            cur_node = (cur_node)->next;
+        }
+        node* temp = (cur_node)->next;
+        (cur_node)->next = (cur_node)->next->next;
+        delete(temp);
+    }
+    return;
+}
+
+void deleteNthCodeUsing_O_n_iterative(node** root_node, int N)
+{
+    node* first = *root_node, *second = *root_node;
+    int key = N;
+    while(key-- > 0)
+    {
+        if((key == 0) && (second->next == nullptr))
+        {
+            delete second;
+        }
+        second = second->next;
+    }
+    
+    while(second->next != nullptr)
+    {
+        first = first->next;
+        second = second->next;
+    }
+    node* temp = first->next;
+    first->next = first->next->next;
+    delete temp;
+    return;
+}
+
+void deleteNthCodeUsing_O_n_recursive(node** root_node, int& N)
+{
+    
+    if(!*root_node)    
+        return;
+    
+    deleteNthCodeUsing_O_n_recursive(&(*root_node)->next, N);
+    N = N - 1;
+    if(N == -1)
+    {
+        node* temp = (*root_node)->next;
+        (*root_node)->next = (*root_node)->next->next;
+        delete temp;
+    }
+    return;
+}
+
+void printList(node* root_node)
+{
+    while(root_node)
+    {
+        cout << (root_node)->data << "  ";
+    
+        root_node = (root_node)->next;
+    }
+    cout << endl;
+    return;
+}
+int main() {
+    
+    node* root_node = new node(10);
+    push_node(&root_node, 9);
+    push_node(&root_node, 8);
+    push_node(&root_node, 7);
+    push_node(&root_node, 6);
+    push_node(&root_node, 5);
+    push_node(&root_node, 4);
+    push_node(&root_node, 3);
+    push_node(&root_node, 2);
+    push_node(&root_node, 1);
+    
+    printList(root_node);
+    
+    deleteNthCodeBrute(&root_node, 3);
+    
+    printList(root_node);
+    
+    deleteNthCodeUsing_O_n_iterative(&root_node, 3);
+    
+    printList(root_node);
+    int N = 3;
+    deleteNthCodeUsing_O_n_recursive(&root_node, N);
+    
+    printList(root_node);
+    
+	return 0;
+}
