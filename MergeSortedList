@@ -1,0 +1,37 @@
+#include <iostream>
+using namespace std;
+
+typedef struct node
+{
+    int data;
+    node* next;
+    
+    node(int val)
+    {
+        data = val;
+        next = nullptr;
+    }
+} node;
+
+void push
+int main() {
+	// your code goes here
+	node* resList = nullptr, *firstList = nullptr, *secondList = nullptr;
+	
+	push(&firstList, 15);
+	push(&firstList, 10);
+	push(&firstList, 5);
+	printList(firstList);
+	
+	push(&secondList, 40);
+	push(&secondList, 20);
+	push(&secondList, 3);
+	push(&secondList, 2);
+	
+	printList(secondList);
+	
+	resList = sorted_merge(firstList,secondList);
+	printList(resList);
+	
+	return 0;
+}
