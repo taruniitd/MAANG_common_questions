@@ -1,3 +1,5 @@
+//https://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+//https://www.geeksforgeeks.org/recursively-reversing-a-linked-list-a-simple-implementation/
 #include <iostream>
 using namespace std;
 
@@ -11,13 +13,192 @@ typedef struct node
         data = val;
         next = nullptr;
     }
+    node() { }
 } node;
 
-void push
+void push(node** root_node, int val)
+{
+    node* cur_node = new node(val);
+    cur_node->next = *root_node;
+    *root_node = cur_node;
+}
+
+void printList(node* root_node)
+{
+    while(root_node)
+    {
+        cout << root_node->data << "  ";
+        root_node = root_node->next;
+    }
+    cout << endl;
+}
+
+void MoveNode(node** res, node** cur_list_node)
+{
+    node* temp = *cur_list_node;
+    *cur_list_node = (*cur_list_node)->next;
+    
+    temp->next = *res;
+    *res = temp;
+}
+
+node* sorted_merge(node* firstList, node* secondList)
+{
+    node dummy;
+    node* tail = &dummy;
+    
+    dummy.next = nullptr;
+    
+    while(1)
+    {
+        if(firstList == nullptr)
+        {
+            tail->next = secondList;
+            break;
+        }
+        else if(secondList == nullptr)
+        {
+            tail->next = firstList;
+            break;
+        }
+        if(firstList->data < secondList->data)
+        {
+            MoveNode(&tail->next, &firstList);
+        }
+        else
+        {
+            MoveNode(&tail->next, &secondList);
+        }
+        tail = tail->next;
+    }
+    return dummy.next;
+}
+
+node* sorted_merge_using_reference(node* firstList, node* secondList)
+{
+    node* result = nullptr;
+    node** lastPtrRef = &result;
+    
+    while(1)
+    {
+        if(firstList == nullptr)
+        {
+            *lastPtrRef = secondList;
+            break;
+        }
+        else if(secondList == nullptr)
+        {
+            *lastPtrRef = firstList;
+            break;
+        }
+        
+        if(firstList->data < secondList->data)
+        {
+            MoveNode(lastPtrRef, &firstList);
+        }
+        else
+        {
+            MoveNode(lastPtrRef, &secondList);
+        }
+        lastPtrRef = &((*lastPtrRef)->next);
+    }
+    return result;
+}
+
+node* sorted_merge_using_recursion(node* firstList, node* secondList)
+{
+    node* result = nullptr;
+    if(firstList == nullptr)
+        return secondList;
+    else if(secondList == nullptr)
+        return firstList;
+        
+    if(firstList->data <= secondList->data)
+    {
+        result = firstList;
+        result->next = sorted_merge_using_recursion(firstList->next, secondList);
+    }
+    else
+    {
+        result = secondList;
+        result->next = sorted_merge_using_recursion(firstList, secondList->next);
+    }
+    return result;
+}
+
+/*node* reverseList(node* cur_list)
+{
+    if(cur_list == nullptr)    
+        return nullptr;
+    if(cur_list->next == nullptr)
+        return cur_list;
+    
+    node* temp = reverseList(cur_list->next);
+    temp->next = cur_list;
+    cur_list->next = nullptr;
+    return cur_list;
+}  */
+
+node* reverseList(node* head)
+{
+    if (head->next == NULL)
+        return head;
+    node* rest = reverseList(head->next);
+    head->next->next = head;
+    head->next = NULL;
+    return rest;
+}
+
+node* sorted_merge_using_reverse_list(node* firstList, node* secondList)
+{
+    firstList = reverseList(firstList);
+    secondList = reverseList(secondList);
+    cout << "After reverse : " << endl;
+    printList(firstList);
+    printList(secondList);
+    node* head = nullptr;
+    node* temp;
+    
+    while(firstList != nullptr && secondList != nullptr)
+    {
+        if(firstList->data >= secondList->data)
+        {
+            temp = firstList->next;
+            firstList->next = head;
+            head = firstList;
+            firstList = temp;
+        }
+        else
+        {
+            temp = secondList->next;
+            secondList->next = head;
+            head = secondList;
+            secondList = temp;
+        }
+    }
+    
+    while(firstList != nullptr)
+    {
+        temp = firstList->next;
+        firstList->next = head;
+        head = firstList;
+        firstList = temp;
+    }
+    
+    while(secondList != nullptr)
+    {
+        temp = secondList->next;
+        secondList->next = head;
+        head = secondList;
+        secondList = temp;
+    }
+    return head;
+}
+
 int main() {
 	// your code goes here
 	node* resList = nullptr, *firstList = nullptr, *secondList = nullptr;
-	
+	node* resList1 = nullptr, *resList2 = nullptr, *resList3 = nullptr;
 	push(&firstList, 15);
 	push(&firstList, 10);
 	push(&firstList, 5);
@@ -30,8 +211,30 @@ int main() {
 	
 	printList(secondList);
 	
-	resList = sorted_merge(firstList,secondList);
-	printList(resList);
-	
+	int tryCase = 0;
+	cin >> tryCase;
+	switch(tryCase)
+	{
+	    case 0:    
+	        cout << "case 0 : follow sorted merge using dummy pointer :" << endl;
+        	resList = sorted_merge(firstList,secondList);
+        	printList(resList);
+        	break;
+        case 1:
+            cout << "case 1 : follow sorted merge using reference :" << endl;
+        	resList1 = sorted_merge_using_reference(firstList,secondList);
+        	printList(resList1);
+        	break;
+        case 2:
+            cout << "case 2 : follow sorted merge using recursion :" << endl;
+        	resList2 = sorted_merge_using_recursion(firstList,secondList);
+        	printList(resList2);
+        	break;
+        case 3:
+            cout << "case 3 : follow sorted merge using reverse list :" << endl;
+        	resList3 = sorted_merge_using_reverse_list(firstList,secondList);
+        	printList(resList3);
+        	break;
+	}
 	return 0;
 }
