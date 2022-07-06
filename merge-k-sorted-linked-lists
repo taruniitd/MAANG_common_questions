@@ -1,1 +1,99 @@
+#include <iostream>
+using namespace std;
+
+typedef struct node {
+    int data;
+    node* next;
+    node(int val)
+    {
+        data = val;
+        next = nullptr;
+    }
+} node;
+
+void printList(node* root_node)
+{
+    cout << " cur list nodes are : ";
+    while(root_node != nullptr)
+    {
+        cout << root_node->data << "   " ;
+        root_node = root_node->next;
+    }
+}
+
+node* mergeKsortedList(node* arr[], int no_lists)
+{
+    for(int cur_list = 1; cur_list <= no_lists; cur_list++)
+    {
+        if(cur_list == 2)
+            printList(arr[0]);
+        while(1)
+        {
+            node* first_list = arr[0];
+            node* second_list = arr[cur_list];
+            
+            if(second_list == nullptr)
+                break;
+            if(first_list->data >= second_list->data)
+            {
+                arr[cur_list] = second_list->next;
+                second_list->next = first_list;
+                arr[0] = second_list;
+            }
+            else
+            {
+                while(first_list->next != nullptr)
+                {
+                    if(first_list->next->data >= second_list->data)
+                    {
+                        arr[cur_list] = second_list->next;
+                        second_list->next = first_list->next;
+                        first_list->next = second_list;
+                        break;
+                    }
+                    first_list = first_list->next;
+                    
+                    if(first_list->next == nullptr)
+                    {
+                        arr[cur_list] = second_list->next;
+                        second_list->next = nullptr;
+                        first_list->next = second_list;
+                        first_list->next->next = nullptr;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return arr[0];
+}
+
+
+int main() {
+	int no_lists = 3;
+	int no_node_list = 4;
+	
+	node* arr[no_lists];
+	
+	arr[0] = new node(1);
+	arr[0]->next = new node(3);
+	arr[0]->next->next = new node(5);
+	arr[0]->next->next->next = new node(7);
+	
+	
+	arr[1] = new node(2);
+	arr[1]->next = new node(4);
+	arr[1]->next->next = new node(6);
+	arr[1]->next->next->next = new node(8);
+	
+	
+	arr[2] = new node(0);
+	arr[2]->next = new node(4);
+	arr[2]->next->next = new node(7);
+	arr[2]->next->next->next = new node(10);
+	
+	node* resultList = mergeKsortedList(arr, no_lists - 1);
+	printList(resultList);
+	return 0;
+}
 
