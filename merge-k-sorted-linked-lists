@@ -1,4 +1,6 @@
+//https://www.geeksforgeeks.org/merge-k-sorted-linked-lists/
 #include <iostream>
+#include <climits>
 using namespace std;
 
 typedef struct node {
@@ -68,6 +70,90 @@ node* mergeKsortedList(node* arr[], int no_lists)
     return arr[0];
 }
 
+node* sort_merge_recursive(node* first_list, node* second_list)
+{
+    node* result_list = nullptr;
+    
+    if(first_list == nullptr)
+        return second_list;
+    else if(second_list == nullptr)
+        return first_list;
+    
+    if(first_list->data <= second_list->data)
+    {
+        result_list = first_list;
+        result_list->next = sort_merge_recursive(first_list->next, second_list);
+    }
+    else
+    {
+        result_list = second_list;
+        result_list->next = sort_merge_recursive(first_list, second_list->next);
+    }
+    return result_list;
+}
+
+node* mergeKsortedListRecursively(node* arr[], int no_lists)
+{
+    while(no_lists != 0)
+    {
+        int i = 0, j = no_lists;
+        while(i < j)
+        {
+            arr[i] = sort_merge_recursive(arr[i], arr[j]);
+            i++;
+            j--;
+            
+            if(i >= j)
+                no_lists = j;
+        }
+    }
+    return arr[0];
+}
+
+node* mergeKsortedListInteratively(node* arr[], int no_lists)
+{
+    node* result_list = nullptr;
+    
+    while(1)
+    {
+        int a = 0;
+        int z;
+        int min = INT_MAX;
+        node* cur_list;
+        for(int i = 0; i <= no_lists; i++)
+        {
+            if(arr[i] != nullptr)
+            {
+                a++;
+                if(arr[i]->data < min)
+                {
+                    min = arr[i]->data;
+                    z = i;
+                }
+            }
+        }
+        if(a != 0)
+        {
+            arr[z] = arr[z]->next;
+            node* temp = new node(min);
+            if(result_list == nullptr)
+            {
+                result_list = temp;
+                cur_list = temp;
+            }
+            else
+            {
+                cur_list->next = temp;
+                cur_list = temp;
+            }
+        }
+        else
+        {
+            return result_list;
+        }
+    }
+    
+}
 
 int main() {
 	int no_lists = 3;
@@ -92,8 +178,23 @@ int main() {
 	arr[2]->next->next = new node(7);
 	arr[2]->next->next->next = new node(10);
 	
-	node* resultList = mergeKsortedList(arr, no_lists - 1);
-	printList(resultList);
+	int i;
+	node* resultList;
+	cin >> i;
+	switch(i)
+	{
+	    case 0:
+        	resultList = mergeKsortedList(arr, no_lists - 1);
+        	printList(resultList);
+        break;
+        case 1:
+            resultList = mergeKsortedListRecursively(arr, no_lists - 1);
+        	printList(resultList);
+        break;
+        case 2:
+            resultList = mergeKsortedListInteratively(arr, no_lists - 1);
+        	printList(resultList);
+        break;
+	}
 	return 0;
 }
-
