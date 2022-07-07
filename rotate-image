@@ -1,0 +1,63 @@
+//https://www.geeksforgeeks.org/inplace-rotate-square-matrix-by-90-degrees/
+#include <iostream>
+#include <algorithm>
+using namespace std;
+#define N 4
+void rotateMatrix(int mat[][N])
+{
+    for(int loopCount = 0; loopCount < N/2; loopCount++)
+    {
+        for(int innerCount = loopCount; innerCount < N - loopCount - 1; innerCount++)
+        {
+            int temp = mat[loopCount][innerCount];
+            mat[loopCount][innerCount] = mat[innerCount][N - 1 - loopCount];
+            mat[innerCount][N - 1 - loopCount] = mat[N - 1 - loopCount][N - 1 - innerCount];
+            mat[N - 1 - loopCount][N - 1 - innerCount] = mat[N - 1 - innerCount][loopCount];
+            mat[N - 1 - innerCount][loopCount] = temp;
+        }
+    }
+}
+
+void rotateMatrixUsingTranspose(int mat[][N])
+{
+    for(int i = 0; i < N; i++)
+        reverse(mat[i], mat[i] + N);
+    
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = i; j < N; j++)
+            swap(mat[i][j], mat[j][i]);
+    }
+}
+void display(int mat[][N])
+{
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            cout << mat[i][j] << "  ";
+        }
+    }
+}
+int main()
+{
+    int mat[N][N] = {   {1, 2, 3, 4},
+                        {5, 6, 7, 8},
+                        {9, 10, 11, 12},
+                        {13, 14, 15, 16}
+                    };
+    int type;
+    cin >> type;
+    switch(type)
+    {
+        case 0:
+            cout << "rotate matrix by naive method :" <<endl;
+            rotateMatrix(mat);
+            break;
+        case 1:
+            cout << "rotate matrix by transpose :" <<endl;
+            rotateMatrixUsingTranspose(mat);
+            break;
+    }
+    display(mat);
+}
