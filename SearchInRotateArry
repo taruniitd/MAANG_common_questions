@@ -1,3 +1,4 @@
+//https://www.geeksforgeeks.org/search-an-element-in-a-sorted-and-pivoted-array/
 #include <iostream>
 using namespace std;
 
@@ -51,11 +52,53 @@ int findInRotateSortedArrUsingPivot(int arr[], int arrLen, int key)
     return binarySearch(arr, pivot + 1, high, key);
 }   
 
+int searchSingleBinarySearch(int arr[], int low, int high, int key)
+{
+    int mid = (low + high) / 2;
+    
+    if(arr[mid] == key)
+        return mid;
+    
+    if(arr[low] <= arr[mid])
+    {
+        if(key >= arr[low] && key <= arr[mid])
+        {
+            return searchSingleBinarySearch(arr, low, mid -1 , key);
+        }
+        return searchSingleBinarySearch(arr, mid + 1, high, key);
+    }
+    if(key >= arr[mid] && key <= arr[high])
+    {
+        return searchSingleBinarySearch(arr, mid + 1, high, key);
+    }
+    
+    return searchSingleBinarySearch(arr, low, mid - 1, key);
+}
+
+int findInRotateSortedArrUsingSingleBinarySearch(int arr[], int arrLen, int key)
+{
+    int low = 0;
+    int high = arrLen - 1;
+    int mid = (low + high) / 2;
+    
+    return searchSingleBinarySearch(arr, low, high, key);
+}
+
 int main() {
     int arr[] = {5, 6, 7, 8, 9, 10, 1, 2, 3};
     int arrLen = sizeof(arr) / sizeof(arr[0]);
     int key = 3;
-    cout << "key is at index = " << findInRotateSortedArrUsingPivot(arr, arrLen, key) << endl ;
     
+    int algoType;
+    cin >> algoType;
+    switch(algoType)
+    {
+        case 0:
+            cout << "key is at index = " << findInRotateSortedArrUsingPivot(arr, arrLen, key) << endl ;
+        break;
+        case 1:
+            cout << "key is at index = " << findInRotateSortedArrUsingSingleBinarySearch(arr, arrLen, key) << endl;
+        break;
+    }
 	return 0;
 }
