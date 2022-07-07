@@ -1,0 +1,52 @@
+//https://www.geeksforgeeks.org/combinational-sum/
+#include <iostream>
+#include <vector>
+#include<algorithm>
+using namespace std;
+
+static int loopCount = 0;
+
+void findCombinationSum(vector<int> arr, int arrLen, int targetSum, vector<int>& temp, 
+    vector<vector<int>> &resCombination, int i)
+{
+    
+    if(targetSum == 0)
+    {
+        resCombination.push_back(temp);
+        return;
+    }
+    while(i < arrLen && (targetSum - arr[i]) >= 0)
+    {
+        temp.push_back(arr[i]);
+        findCombinationSum(arr, arrLen, targetSum - arr[i], temp, resCombination, i);
+        i++;
+        temp.pop_back();
+    }
+}
+int main()
+{
+    vector<int> arr;
+    arr.push_back(2);
+    arr.push_back(4);
+    arr.push_back(6);
+    arr.push_back(8);
+    int arrLen = arr.size();
+    vector<int> temp;
+    
+    int targetSum = 8;
+    sort(arr.begin(), arr.end());
+    arr.erase(unique(arr.begin(), arr.end()), arr.end());
+    vector<vector<int>> resCombination;
+    findCombinationSum(arr, arrLen, targetSum, temp, resCombination, 0);
+
+    for(int j = 0; j < resCombination.size(); j++)
+    {
+        cout << " jth vector elem : " << j << "  " << endl;
+        for(int k = 0; k < resCombination[j].size(); k++)
+        {
+            cout << resCombination[j][k] << "  ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
