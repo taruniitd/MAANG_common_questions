@@ -1,0 +1,55 @@
+//https://www.geeksforgeeks.org/given-a-sequence-of-words-print-all-anagrams-together/
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+void printAnagramUsingDualHashMap(vector<string> wordVec, int numWords)
+{
+    map<map<char,int>, vector<string>> map_vec;
+    
+    for(string str : wordVec)
+    {
+        map<char,int> innerMap;
+        vector<string> tempVec;
+        
+        for(int i = 0; i < str.length(); i++)
+        {
+            ++innerMap[str[i]];
+        }
+        
+        auto it = map_vec.find(innerMap);
+        if(it != map_vec.end())
+        {
+            it->second.push_back(str);
+        }
+        else
+        {
+            tempVec.push_back(str);
+            map_vec.insert({ innerMap, tempVec});
+        }
+    }
+    vector<vector<string>> result;
+    for(auto it = map_vec.begin(); it != map_vec.end(); ++it)
+    {
+        result.push_back(it->second);
+    }
+    
+    for(int i = 0; i < result.size(); ++i)
+    {
+          cout << "[";
+        for(int j = 0; j < result[i].size(); ++j)
+        {
+            cout << result[i][j] << ", ";
+        }
+          cout << "]";
+    }
+}
+
+int main() {
+	vector<string> wordVec = { "cat", "dog", "tac", "god", "atc" };
+	int numWords = wordVec.size();
+	
+	printAnagramUsingDualHashMap(wordVec,numWords);
+	return 0;
+}
