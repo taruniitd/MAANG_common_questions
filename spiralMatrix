@@ -85,6 +85,27 @@ void sprialMatrixUsingIndex(vector<vector<int>> matrix, int numRow, int numCol)
     return;
 }
 
+void sprialMatrixUsingRecursion(int matrix[][C], int rowIndex, int colIndex, int numRow, int numCol)
+{
+    if(rowIndex >= numRow || colIndex >= numCol)
+        return;
+    for(int p = colIndex; p < numCol; p++)
+        cout << matrix[rowIndex][p] << "  ";
+    for(int p = rowIndex + 1; p < numRow; p++)
+        cout << matrix[p][numCol - 1] << "  ";
+    if((numRow - 1) != rowIndex)
+    {
+        for(int p = numCol - 2; p >= colIndex; p--)
+            cout << matrix[numRow - 1][p] << "  ";
+    }
+    if((numCol - 1) != colIndex)
+    {
+        for(int p = numRow - 2; p > rowIndex; p--)
+            cout << matrix[p][colIndex] << "  ";
+    }
+    sprialMatrixUsingRecursion(matrix, rowIndex + 1, colIndex + 1, numRow - 1, numCol - 1);
+}
+
 int main()
 {
     vector<vector<int>> matrix = { {1, 2, 3, 4},
@@ -94,19 +115,28 @@ int main()
     vector<vector<int>> matrix1 = { {1, 2, 3, 4},
                                     {5, 6, 7, 8},
                                     {9, 10, 11, 12},
-                                    {13, 14, 15, 16} };                                    
+                                    {13, 14, 15, 16} };
+    int matrix2[R][C] = { {1, 2, 3, 4},
+                                    {5, 6, 7, 8},
+                                    {9, 10, 11, 12},
+                                    {13, 14, 15, 16} };                                 
+    vector<int> res;
     int tryCase = 0;
 	cin >> tryCase;
     switch(tryCase)
     {
         case 0:
-            cout << "sprialMatrix using directions : " << endl;
-            vector<int> res = sprialMatrix(matrix);
+            cout << "sprialMatrix using directions : "<< endl;
+            res = sprialMatrix(matrix);
             printSpiralMatrix(res);
             break;
         case 1:
-        
+            cout << "sprialMatrix using indexes : "<< endl;
             sprialMatrixUsingIndex(matrix1, R, C);
+            break;
+        case 2:
+            cout << "sprialMatrix using recursion : "<< endl;
+            sprialMatrixUsingRecursion(matrix2, 0, 0, R, C);
             break;
     }
     return 0;
