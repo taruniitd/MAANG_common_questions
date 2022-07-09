@@ -1,0 +1,70 @@
+//https://www.geeksforgeeks.org/print-a-given-matrix-in-spiral-form/
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> sprialMatrix(vector<vector<int>>& matrix)
+{
+    int m = matrix.size();
+    int n = matrix[0].size();
+    vector<int> ans;
+    
+    if(m == 0)
+        return ans;
+    
+    vector<vector<bool>> isVisited(m, vector<bool>(n, false));
+    int dir_r[] = {0, 1, 0, -1};
+    int dir_c[] = {1, 0, -1, 0};
+    
+    int x = 0, y = 0, di = 0;
+    
+    for(int i = 0; i < m*n; i++)
+    {
+        ans.push_back(matrix[x][y]);
+        isVisited[x][y] = true;
+        
+        int newX = x + dir_r[di];
+        int newY = y + dir_c[di];
+        
+        if(0 <= newX && newX < m && 0 <= newY && newY < n && !(isVisited[newX][newY]))
+        {
+            x = newX;
+            y = newY;
+        }
+        else
+        {
+            di = (di + 1) % 4;
+            x = x + dir_r[di];
+            y = y + dir_c[di];
+        }
+    }
+    return ans;
+}
+
+void printSpiralMatrix(vector<int> ansMatrix)
+{
+    for(int x : ansMatrix)
+        cout << x <<"  ";
+}
+
+int main()
+{
+    vector<vector<int>> matrix = { {1, 2, 3, 4},
+                                    {5, 6, 7, 8},
+                                    {9, 10, 11, 12},
+                                    {13, 14, 15, 16} };
+    int type;
+    cin >> type;
+    switch(type)
+    {
+        case 0:
+            cout << "sprialMatrix using directions : " << endl;
+             vector<int> res = sprialMatrix(matrix);
+            printSpiralMatrix(res);
+            break;
+        case 1:
+        
+            break;
+    }
+    return 0;
+}
