@@ -106,20 +106,104 @@ void sprialMatrixUsingRecursion(int matrix[][C], int rowIndex, int colIndex, int
     sprialMatrixUsingRecursion(matrix, rowIndex + 1, colIndex + 1, numRow - 1, numCol - 1);
 }
 
+bool isInBound(int rowIndex, int colIndex)
+{
+    if(rowIndex < 0 || rowIndex > R || colIndex < 0 || colIndex > C)
+        return false;
+    return true;
+}
+
+bool isBlocked(int matrix[R][C], int rowIndex, int colIndex)
+{
+    if(!isInBound(rowIndex,colIndex))
+        return true;
+    if(matrix[rowIndex][colIndex] = -1)
+        return true;
+
+    return false;
+}
+
+void sprialMatrixUsingDFS(int matrix[R][C], int rowIndex, int colIndex, int dir, vector<int>& res)
+{
+    if(isBlocked(matrix, rowIndex, colIndex))
+        return;
+    bool allBlocked = true;
+    for(int k = -1; k <= 1; k += 2)
+        allBlocked = allBlocked && isBlocked(matrix, k + rowIndex, colIndex) && isBlocked(matrix, rowIndex, k + colIndex);
+    
+    res.push_back(matrix[rowIndex][colIndex]);
+    matrix[rowIndex][colIndex] = -1;
+    if(allBlocked)
+        return;
+    
+    int nxt_i = rowIndex;
+    int nxt_j = colIndex;
+    int nxt_dir = dir;
+    
+    if(dir == 0)
+    {
+        if(!isBlocked(matrix, rowIndex, colIndex + 1))
+            nxt_j++;
+        else
+        {
+            nxt_dir = 1;
+            nxt_i--;
+        }
+    }
+    else if (dir == 1)
+    {
+        if(!isBlocked(matrix, rowIndex + 1, colIndex))
+            nxt_i++;
+        else
+        {
+            nxt_dir = 2;
+            nxt_j--;
+        }
+    }
+    else if(dir == 2)
+    {
+        if(!isBlocked(matrix, rowIndex, colIndex - 1))
+            nxt_j--;
+        else
+        {
+            nxt_dir = 3;
+            nxt_i--;
+        }
+    }
+    else if(dir == 3)
+    {
+        if(!isBlocked(matrix, rowIndex - 1, colIndex))
+            nxt_i--;
+        else
+        {
+            nxt_dir = 0;
+            nxt_j++;
+        }
+    }
+    sprialMatrixUsingDFS(matrix, nxt_i, nxt_j, nxt_dir, res);
+}
+
 int main()
 {
     vector<vector<int>> matrix = { {1, 2, 3, 4},
                                     {5, 6, 7, 8},
                                     {9, 10, 11, 12},
                                     {13, 14, 15, 16} };
+    
     vector<vector<int>> matrix1 = { {1, 2, 3, 4},
                                     {5, 6, 7, 8},
                                     {9, 10, 11, 12},
                                     {13, 14, 15, 16} };
-    int matrix2[R][C] = { {1, 2, 3, 4},
+    
+    int matrix2[R][C] =             { {1, 2, 3, 4},
                                     {5, 6, 7, 8},
                                     {9, 10, 11, 12},
                                     {13, 14, 15, 16} };                                 
+    
+    int matrix3[R][C] =             { {1, 2, 3, 4},
+                                    {5, 6, 7, 8},
+                                    {9, 10, 11, 12},
+                                    {13, 14, 15, 16} }; 
     vector<int> res;
     int tryCase = 0;
 	cin >> tryCase;
@@ -137,6 +221,11 @@ int main()
         case 2:
             cout << "sprialMatrix using recursion : "<< endl;
             sprialMatrixUsingRecursion(matrix2, 0, 0, R, C);
+            break;
+        case 3:
+            cout << "sprialMatrix using DFS : "<< endl;
+            sprialMatrixUsingDFS(matrix3, 0, 0, 0, res);
+            printSpiralMatrix(res);
             break;
     }
     return 0;
