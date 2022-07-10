@@ -1,0 +1,62 @@
+//https://www.geeksforgeeks.org/merging-intervals/
+#include <iostream>
+#include <stack>
+#include <algorithm>
+using namespace std;
+
+struct Interval
+{
+    int start;
+    int end;
+};
+
+bool compInterval(Interval temp1, Interval temp2)
+{
+    return (temp1.start < temp2.start);
+}
+
+void mergeIntervalUsingStack(Interval arr[], int arrSize)
+{
+    if(arrSize < 0)
+        return;
+    stack<Interval> tempStack;
+    sort(arr, arr + arrSize, compInterval);
+    tempStack.push(arr[0]);
+
+    for(int i = 1; i < arrSize; i++)
+    {
+        Interval top = tempStack.top();
+        if(top.end < arr[i].start)
+            tempStack.push(arr[i]);
+        else
+        {
+            if(top.end < arr[i].end)
+            {
+                top.end = arr[i].end;
+                tempStack.pop();
+                tempStack.push(top);
+            }
+        }
+    }
+
+    cout << "After Merge Intervals : " << endl;
+    while(!tempStack.empty())
+    {
+        Interval t = tempStack.top();
+        cout << "[  " << t.start << " , " << t.end << " ] " << endl;
+        tempStack.pop();
+    }
+}
+
+int main()
+{
+    Interval arr[] = {  {2,8},
+                        {6,9},
+                        {4,5},
+                        {3,7} };
+    int arrSize = sizeof(arr) / sizeof(arr[0]);
+    
+    mergeIntervalUsingStack(arr, arrSize);
+    
+    return 0;
+}
