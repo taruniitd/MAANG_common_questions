@@ -1,0 +1,36 @@
+#include <iostream>
+using namespace std;
+
+bool canJump(int arr[], int arrSize)
+{
+    if(arrSize == 1)
+        return true;
+    
+    int max = 0;
+    
+    for(int index = 0; index < arrSize - 1 && max >= index; index++)
+    {
+        if(max < (index + arr[index]))
+            max = index + arr[index];
+    
+        if(max >= (arrSize - 1))
+            return true;
+    }
+    return false;
+}
+
+int main()
+{
+    int arr[] = { 3, 2, 1, 0 ,4 };
+    int arr1[] = {2,3,1,1,4};
+    int arr2[] = {1, 2, 0, 3, 0, 0}; 
+    int arrSize = sizeof(arr) / sizeof(arr[0]);
+    
+    bool isCanJump = canJump(arr, arrSize);
+    cout << "jump possible : " << isCanJump << endl;
+    isCanJump = canJump(arr1, arrSize);
+    cout << "jump possible : " << isCanJump << endl;
+    isCanJump = canJump(arr2, 6);
+    cout << "jump possible : " << isCanJump << endl;
+    return 0;
+}
