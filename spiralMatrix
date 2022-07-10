@@ -44,6 +44,7 @@ vector<int> sprialMatrix(vector<vector<int>>& matrix)
 
 void printSpiralMatrix(vector<int> ansMatrix)
 {
+    cout << "print matrix in spiral " << endl;
     for(int x : ansMatrix)
         cout << x <<"  ";
 }
@@ -108,7 +109,7 @@ void sprialMatrixUsingRecursion(int matrix[][C], int rowIndex, int colIndex, int
 
 bool isInBound(int rowIndex, int colIndex)
 {
-    if(rowIndex < 0 || rowIndex > R || colIndex < 0 || colIndex > C)
+    if(rowIndex < 0 || rowIndex >= R || colIndex < 0 || colIndex >= C)
         return false;
     return true;
 }
@@ -117,7 +118,7 @@ bool isBlocked(int matrix[R][C], int rowIndex, int colIndex)
 {
     if(!isInBound(rowIndex,colIndex))
         return true;
-    if(matrix[rowIndex][colIndex] = -1)
+    if(matrix[rowIndex][colIndex] == -1)
         return true;
 
     return false;
@@ -130,7 +131,7 @@ void sprialMatrixUsingDFS(int matrix[R][C], int rowIndex, int colIndex, int dir,
     bool allBlocked = true;
     for(int k = -1; k <= 1; k += 2)
         allBlocked = allBlocked && isBlocked(matrix, k + rowIndex, colIndex) && isBlocked(matrix, rowIndex, k + colIndex);
-    
+    //cout << " push in result matrix " << matrix[rowIndex][colIndex] << endl;
     res.push_back(matrix[rowIndex][colIndex]);
     matrix[rowIndex][colIndex] = -1;
     if(allBlocked)
@@ -143,19 +144,28 @@ void sprialMatrixUsingDFS(int matrix[R][C], int rowIndex, int colIndex, int dir,
     if(dir == 0)
     {
         if(!isBlocked(matrix, rowIndex, colIndex + 1))
+        {
+            //cout << "Now to 1st dir: nxt_i = " << nxt_i << "nxt_j = " << nxt_j << endl;
             nxt_j++;
+        }
         else
         {
+            //cout << "changing to 2nd dir : nxt_i = " << nxt_i << "nxt_j = " << nxt_j << endl;
             nxt_dir = 1;
-            nxt_i--;
+            nxt_i++;
+            //nxt_j--;
         }
     }
     else if (dir == 1)
     {
         if(!isBlocked(matrix, rowIndex + 1, colIndex))
+        {
+            //cout << "Now to 2nd dir" << endl;
             nxt_i++;
+        }
         else
         {
+            //cout << "changing to 3rd dir" << endl;
             nxt_dir = 2;
             nxt_j--;
         }
@@ -200,7 +210,7 @@ int main()
                                     {9, 10, 11, 12},
                                     {13, 14, 15, 16} };                                 
     
-    int matrix3[R][C] =             { {1, 2, 3, 4},
+    int matrix3[R][C] =         { {1, 2, 3, 4},
                                     {5, 6, 7, 8},
                                     {9, 10, 11, 12},
                                     {13, 14, 15, 16} }; 
