@@ -1,6 +1,7 @@
 //https://www.geeksforgeeks.org/insert-in-sorted-and-non-overlapping-interval-array/
 #include <iostream>
 #include <vector>
+#include <stack>
 #include <algorithm>
 using namespace std;
 
@@ -87,6 +88,88 @@ vector<Interval> insertNewInterval(vector<Interval>& Intervals, Interval newInte
     return ans;
 }
 
+bool mycomp(Interval a, Interval b) { return a.start < b.start; }
+void  insertNewIntervalUsingSort(vector<Interval>& Intervals, Interval newInterval)
+{
+    vector<Interval> ans;
+    int n = Intervals.size();
+    Intervals.push_back(newInterval);
+    sort(Intervals.begin(), Intervals.end(), mycomp);
+    
+    int index = 0;
+    
+    for(int i = 1; i <= n; i++)
+    {
+        if(Intervals[index].end > Intervals[i].start)
+        {
+            Intervals[index].end = max(Intervals[index].end, Intervals[i].end);
+        }
+        else
+        {
+            index++;
+            Intervals[index] = Intervals[i];
+        }
+    }
+    for(int i = 0; i <= index; i++)
+    {
+        cout << Intervals[i].start << " , " << Intervals[i].end << endl;
+    }
+    return;
+}
+
+void insertNewIntervalUsingStack(vector<Interval>& Intervals, Interval newInterval)
+{
+    int n = Intervals.size();
+    std::stack<Interval> stkInterval;
+    
+    stkInterval.push(Intervals[0]);
+    Interval top = stkInterval.top();
+    
+    if(newInterval.start < top.end)
+    {
+        stkInterval.pop();
+        top.start = min(top.start, newInterval.start);
+        top.end = max(top.end, newInterval.end);
+        stkInterval.push(top);
+    }
+    else
+    {
+        stkInterval.push(newInterval);
+    }
+    
+    for(int i = 1; i < n; i ++)
+    {
+        top = stkInterval.top();
+        if(Intervals[i].start < top.end)
+        {
+            stkInterval.pop();
+            top.start = min(top.start, Intervals[i].start);
+            top.end = max(top.end, Intervals[i].end);
+            stkInterval.push(top);
+        }
+        else
+        {
+            stkInterval.push(Intervals[i]);
+        }
+    }
+    
+    stack<Interval> finalIntervals;
+    while(!stkInterval.empty())
+    {
+        Interval temp = stkInterval.top();
+        stkInterval.pop();
+        
+        finalIntervals.push(temp);
+    }
+    
+    while(!finalIntervals.empty())
+    {
+        Interval temp = finalIntervals.top();
+        cout << temp.start << " , " << temp.end << endl;
+        finalIntervals.pop();
+    }
+}
+
 int main() {
     vector<Interval> vecInterval;
 	Interval newInterval0(1,2);
@@ -102,8 +185,25 @@ int main() {
 	
 	Interval newInterval(4,9);
 	
-	vector<Interval> ans = insertNewInterval(vecInterval, newInterval);
+	vector<Interval> ans;
+	int typeCase;
+	cin >> typeCase;
 	
+	switch(typeCase)
+	{
+	    case 0:
+	        cout << "insert using normal :" << endl;
+	        ans = insertNewInterval(vecInterval, newInterval);
+	    break;
+	    case 1:
+	        cout << "Insert using sort : " << endl;
+	        insertNewIntervalUsingSort(vecInterval, newInterval);
+	   break;
+	   case 2:
+	   cout << "Insert using stack : " << endl;
+	        insertNewIntervalUsingStack(vecInterval, newInterval);
+	   break;
+	}
 	for(int i = 0; i < ans.size(); i++)
 	{
 	    std::cout <<  ans[i].start <<" , " << ans[i].end << std::endl;
