@@ -1,0 +1,92 @@
+//https://www.geeksforgeeks.org/count-possible-paths-top-left-bottom-right-nxm-matrix/
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int numPaths(int m, int n)
+{
+    if(m == 1 || n == 1)
+        return 1;
+    return numPaths(m - 1, n) + numPaths(m, n- 1);
+}
+
+int numPathsUsingTempArr(int m, int n)
+{
+    int count[m][n] = {0};    
+    
+    for(int i = 0; i < m; i++)
+        count[i][0] = 1;
+    for(int i = 0; i < n; i++)
+        count[0][i] = 1;
+        
+    for(int i = 1; i < m; i++)
+        for(int j = 1; j < n; j++)
+            count[i][j] = count[i - 1][j] + count[i][j - 1];
+    return count[m - 1][n - 1];
+}
+
+int numPathsUsingDP(int m, int n, int DP[4][4])
+{
+    if(m == 1 || n ==1)
+        return DP[m][n] = 1;
+    
+    if(DP[m][n] == 0)
+        DP[m][n] = numPathsUsingDP(m -1, n, DP) + numPathsUsingDP(m, n - 1, DP);
+    return DP[m][n];
+}
+
+int numPathsUsing1DArray(int m, int n)
+{
+    int DP[n] = {1};
+    DP[0] = 1;
+    
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 1; j < n; j++)
+        {
+            DP[j] += DP[j - 1];
+        }
+    }
+    return DP[n - 1];
+}
+
+int numPathsUsingFormula(int m, int n)
+{
+    int path = 1;
+    
+    for(int i = n; i < m + n -1; i++)
+    {
+        path *= i;
+        path /= (i - n + 1);
+    }
+    return path;
+}
+
+int main() {
+	int m = 3;
+	int n = 3;
+	
+	int DP[4][4] = {0};
+	memset(DP, 0, sizeof(DP));
+	int tryCase;
+	cin >> tryCase;
+	switch(tryCase)
+	{
+	    case 0:
+	        cout << " case 0 : num of paths = " << numPaths(m,n);
+	   break;
+	   case 1:
+	        cout << " case 1 : num of paths = " << numPathsUsingTempArr(m,n);
+	   break;
+	   case 2:
+	        cout << " case 2 : num of paths = " << numPathsUsingDP(m,n,DP);
+	   break;
+	   case 3:
+	        cout << " case 3 : num of paths = " << numPathsUsing1DArray(m,n);
+	   break;
+	   case 4:
+	        cout << " case 4 : num of paths = " << numPathsUsingFormula(m,n);
+	   break;
+	}
+	return 0;
+}
