@@ -1,7 +1,9 @@
+//https://takeuforward.org/data-structure/set-matrix-zero/
 #include <iostream>
+#include <vector>
 using namespace std;
 
-void setZeros(vector<vector<int>>& matrix)
+void setZerosBrute(vector<vector<int>>& matrix)
 {
     int rows = matrix.size();
     int cols = matrix[0].size();
@@ -30,9 +32,113 @@ void setZeros(vector<vector<int>>& matrix)
                     }
                     index++;
                 }
+                index = j - 1;
+                while(index >= 0)
+                {
+                    if(matrix[i][index] != 0)
+                    {
+                        matrix[i][index] = -1;
+                    }
+                    index--;
+                }
+                index = j + 1;
+                while(index < cols)
+                {
+                    if(matrix[i][index] != 0)
+                    {
+                        matrix[i][index] = -1;
+                    }
+                    index++;
+                }
             }
         }
     }
+    for(int i = 0; i < rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+        {
+            if(matrix[i][j] <= 0)
+                matrix[i][j] = 0;
+        }
+    }
+}
+
+void displayMatrix(vector<vector<int>> matrix)
+{
+    cout << "final matrix : " << endl;
+    for(int i = 0; i < matrix.size(); i++)
+    {
+        for(int j = 0; j < matrix[0].size(); j++)
+        {
+            cout << matrix[i][j] << "   ";
+        }
+        cout << endl;
+    }
+}
+
+void setZerosDummyArray(vector<vector<int>>& matrix)
+{
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+    
+    vector<int> rows_dummy(rows, -1);
+    vector<int> cols_dummy(cols, -1);
+    
+    for(int i = 0; i < rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+        {
+            if(matrix[i][j] == 0)
+            {
+                rows_dummy[i] = 0;
+                cols_dummy[j] = 0;
+            }
+        }
+    }
+    
+    for(int i = 0; i < rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+        {
+            if(rows_dummy[i] == 0 || cols_dummy[j] == 0)
+                matrix[i][j] = 0;
+        }
+    }
+}
+
+void setZerosUsing1stRow1stCol(vector<vector<int>>& matrix)
+{
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+    int col0 = 1;
+    
+    for(int i = 0; i < rows; i++)
+    {
+        if(matrix[i][0] == 0)
+            col0 = 0;
+        for(int j = 1; j < cols; j++)
+        {
+            if(matrix[i][j] == 0)
+            {
+                matrix[i][0] = 0;
+                matrix[0][j] = 0;
+            }
+        }
+    }
+
+    for(int i = rows - 1; i >= 0; i--)
+    {
+        for(int j = cols - 1; j >= 0; j--)
+        {
+            if(matrix[i][0] == 0 || matrix[0][j] == 0)
+            {
+                matrix[i][j] = 0;
+            }
+        }
+        if(col0 == 0)
+            matrix[i][0] = 0;
+    }
+    
 }
 
 int main()
@@ -42,7 +148,34 @@ int main()
             {4, 5, 6, 7,},
             {8, 9, 10, 0},
             {11, 12, 13, 14} };
-
-    setZeros(arr);
+    vector<vector<int>> arr1;
+    arr1 = { {1, 2, 3, 0},
+            {4, 5, 6, 7,},
+            {8, 9, 10, 0},
+            {11, 12, 13, 14} };
+    vector<vector<int>> arr2;
+    arr2 = { {1, 2, 3, 0},
+            {4, 5, 6, 7,},
+            {8, 9, 10, 0},
+            {11, 12, 13, 14} };
     
+    int tryCase;
+    cin >> tryCase;
+    
+    switch(tryCase)
+    {
+        case 0:
+            setZerosBrute(arr);
+            displayMatrix(arr);
+        break;
+        case 1:
+            setZerosDummyArray(arr1);
+            displayMatrix(arr1);
+        break;
+        case 2:
+            setZerosUsing1stRow1stCol(arr2);
+            displayMatrix(arr2);
+        break;       
+    }
+    return 0;
 }
