@@ -1,0 +1,95 @@
+//https://www.geeksforgeeks.org/count-ways-reach-nth-stair/
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int fib(int n)
+{
+    if(n <=1)
+        return n;
+    return fib(n - 1) + fib(n - 2);
+}
+int countWays(int numStairs)
+{
+    return fib(numStairs + 1);
+}
+
+int countWaysUtil(int n, int m)
+{
+    if(n <= 1)
+        return n;
+    
+    int res = 0;
+    for(int i = 1; i <= m && i <= n; i++)
+    {
+        res += countWaysUtil(n - i, m);
+    }
+    return res;
+}
+int countWaysGeneralized(int numStairs, int numSteps)
+{
+    return countWaysUtil(numStairs + 1, numSteps);
+}
+
+int countWaysDPUtil(int n, int DP[])
+{
+    if(n <= 1)
+        return DP[n] = 1;
+    if(DP[n] != -1)
+        return DP[n];
+        
+    DP[n] = countWaysDPUtil(n - 1, DP) + countWaysDPUtil(n - 2, DP);
+    return DP[n];
+}
+
+int countWaysDP(int numStairs)
+{
+    int DP[numStairs + 1];
+    memset(DP, -1, sizeof(DP));
+    
+    countWaysDPUtil(numStairs, DP);
+    return DP[numStairs];
+}
+
+int countWaysDP_tableUtil(int n, int m)
+{
+    int res[n];
+    res[0] = 1;
+    res[1] = 1;
+    
+    for(int i = 2; i < n; i ++)
+    {
+        res[i] = 0;
+        for(int j = 1; j <= m && j <= i; j++)
+            res[i] += res[i - j];
+    }
+    return res[n - 1];
+}
+
+int countWaysDP_table(int numStairs, int numSteps)
+{
+    return countWaysDP_tableUtil(numStairs + 1, numSteps);
+}
+int main() {
+	// your code goes here
+    int numStairs = 4; 
+    int numSteps = 2;
+    int tryCase;
+    cin >> tryCase;
+    switch(tryCase)
+    {
+        case 0:
+            cout << "No of ways to climb stairs : " << countWays(numStairs);
+        break;
+        case 1:
+            cout << "No of ways to climb stairs using generalized: " << countWaysGeneralized(numStairs, numSteps);
+        break;
+        case 2:
+            cout << "No of ways to climb stairs using Memoization: " << countWaysDP(numStairs);
+        break;
+        case 3:
+            cout << "No of ways to climb stairs using tabloization: " << countWaysDP_table(numStairs, numSteps);
+        break;
+    }
+	return 0;
+}
