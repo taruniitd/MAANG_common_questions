@@ -1,0 +1,124 @@
+//https://www.geeksforgeeks.org/find-the-smallest-window-in-a-string-containing-all-characters-of-another-string/
+#include <iostream>
+#include <climits>
+using namespace std;
+
+const int num_char = 256;
+
+string findSubString(string txt, string pat)
+{
+    int txt_len= txt.length();
+    int pat_len = pat.length();
+    
+    if(txt_len < pat_len)
+    {
+        cout << "No Sub string found " << endl;
+        return "";
+    }
+    
+    int hash_txt[num_char] = { 0 };
+    int hash_pat[num_char] = { 0 };
+    
+    for(int i = 0; i < pat_len; i++)
+        hash_pat[pat[i]]++;
+    
+    int start = 0, start_index = -1, min_len = INT_MAX, count = 0;
+    
+    for(int j = 0; j < txt_len; j++)
+    {
+        hash_txt[txt[j]]++;
+        if(hash_txt[txt[j]] <= hash_pat[txt[j]])
+            count++;
+        
+        if(count == pat_len)
+        {
+            while( (hash_txt[txt[start]] > hash_pat[txt[start]]) ||
+                    hash_pat[txt[start]] == 0)
+            {
+                if(hash_txt[txt[start]] > hash_pat[txt[start]])
+                    hash_txt[txt[start]]--;
+                
+                start++;
+            }
+            int len_window = j - start + 1;
+            if(min_len > len_window)
+            {
+                min_len = len_window;
+                start_index = start;
+            }
+        }
+    }
+    
+    if(start_index == -1)
+    {
+        cout << "Last No Sub string found " << endl;
+        return "";
+    }
+    
+    return txt.substr(start_index, min_len);
+}
+
+string findSubStringUsingCustomMap(string txt, string pat)
+{
+    int temp[256] = { 0 };
+    
+    int ans = INT_MAX, start = 0, count = 0;
+    
+    for(int i = 0; i < pat.length(); i++)
+    {
+        if(temp[pat[i]] == 0)
+            count++;
+        temp[pat[i]]++;
+    }
+    
+    int i = 0;
+    int j = 0;
+    
+    while(j < txt.length())
+    {
+        temp[txt[j]]--;
+        if(temp[txt[j]] == 0)
+            count--;
+        
+        if(count == 0)
+        {
+            while(count == 0)
+            {
+                if(ans > j - i + 1)
+                {
+                    ans = j - i + 1;
+                    start = i;
+                }
+                temp[txt[i]]++;
+                if(temp[txt[i]] > 0)
+                    count++;
+                
+                i++;
+            }
+        }
+        j++;
+    }
+    if(ans != INT_MAX)
+        return txt.substr(start, ans);
+    else
+        return "";
+}
+
+int main() {
+	string txt = "geeksforgeeks";
+	string pat = "ork";
+	
+	int tryCase;
+	cin >> tryCase;
+	
+	switch(tryCase)
+	{
+	    case 0:
+            cout << findSubString(txt, pat);
+        break;
+        case 1:
+            cout << findSubStringUsingCustomMap(txt, pat);
+        break;
+	}
+	return 0;
+}
