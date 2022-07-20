@@ -1,0 +1,53 @@
+//https://www.geeksforgeeks.org/search-a-word-in-a-2d-grid-of-characters/
+#include <iostream>
+using namespace std;
+
+int x[] = { -1, -1, -1,  0,  0,  1,  1,  1 };
+int y[] = { -1,  0,  1, -1,  1, -1,  0,  1 };
+bool Search2D(char* grid, string pattern, int rows, int cols, int r, int c)
+{
+    if(*(grid + r * cols + c) != pattern[0])
+        return false;
+    
+    int len = pattern.length();
+    
+    for(int dir = 0; dir < 8; dir++)
+    {
+        int k;
+        int rd = r + x[dir];
+        int cd = c + y[dir];
+        
+        for(k = 1; k < len; k++)
+        {
+            if(rd < 0 || rd > rows || cd < 0 || cd > cols)
+                break;
+            if(*(grid + rd * cols + cd) == pattern[k])
+                break;
+            rd += x[dir];
+            cd += y[dir];
+        }
+        if(k == len)
+            return true;
+    }
+    return false;
+}
+void patternSearch(char* grid, string pattern, int rows, int cols)
+{
+    for(int r = 0; r < rows; r++)
+    {
+        for(int c = 0; c < cols; c++)
+        {
+            if(Search2D(grid, pattern, rows, cols, r, c))
+                cout << "Pattern found at r = " << r << " c = " << c <<endl; 
+        }
+    }
+}
+int main()
+{
+    int R = 3, C = 13;
+    char grid[R][C] = { "GEEKSFORGEEKS",
+                        "GEEKSQUIZGEEK",
+                        "IDEQAPRACTICE" };
+    patternSearch((char*)grid, "GEEK", R, C);
+    cout << endl;
+}
