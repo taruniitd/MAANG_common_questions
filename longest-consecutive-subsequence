@@ -1,0 +1,109 @@
+//https://www.geeksforgeeks.org/longest-consecutive-subsequence/
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+int findLongestSubSeq(int arr[], int n)
+{
+    int ans = 0, count = 0;
+    sort(arr, arr + n);
+    
+    vector<int> vec;
+    
+    vec.push_back(arr[0]);
+    
+    for(int i = 1; i < n; i++)
+    {
+        if(arr[i] != arr[i - 1])
+            vec.push_back(arr[i]);
+    }
+    
+    for(int i = 0; i < vec.size(); i++)
+    {
+        if(i > 0 && vec[i] == vec[i - 1] + 1)
+            count++;
+        else
+            count = 1;
+        ans = max(ans, count);
+    }
+    return ans;
+}
+
+int findLongestSubSeqUsingSet(int arr[], int n)
+{
+    unordered_set<int> cur_set;
+    int ans = 0;
+    
+    for(int i = 0; i < n; i++)
+        cur_set.insert(arr[i]);
+    
+    for(int i = 0; i < n; i++)
+    {
+        if(cur_set.find(arr[i - 1]) == cur_set.end())
+        {
+            int j = arr[i];
+            while(cur_set.find(j) != cur_set.end())
+                j++;
+            ans = max(ans, j - arr[i]);
+        }
+    }
+    return ans;
+}
+
+int findLongestSubSeqUsingPriorityQ(int arr[], int n)
+{
+    priority_queue<int, vector<int>, greater<int>> pq;
+    for(int i = 0; i < n; i++)
+    {
+        pq.push(arr[i]);
+    }
+    
+    int prev = pq.top();
+    pq.pop();
+    
+    int c = 1;
+    
+    int max = 1;
+    
+    while(!pq.empty())
+    {
+        if(pq.top() - prev > 1)
+        {
+            c = 1;
+            prev = pq.top();
+            pq.pop();
+        }
+        else if(pq.top() == prev)
+        {
+            prev = pq.top();
+            pq.pop();
+        }
+        else
+        {
+            c++;
+            prev = pq.top();
+            pq.pop();
+        }
+        
+        if(max < c)
+        {
+            max = c;
+        }
+    }
+    return max;
+}
+
+int main()
+{
+    int arr[] = { 1, 2, 2, 3 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    cout << " longest consecutive seq = " << findLongestSubSeq(arr, n) << endl;
+    
+    cout << " longest consecutive seq = " << findLongestSubSeqUsingSet(arr, n) <<endl;
+    
+    cout << " longest consecutive seq = " << findLongestSubSeqUsingPriorityQ(arr, n) <<endl;
+}
