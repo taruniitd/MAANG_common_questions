@@ -1,0 +1,137 @@
+//https://www.geeksforgeeks.org/word-break-problem-dp-32/
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+int dictionaryContains(string word)
+{
+    string dictionary[] = { "i", "donot", "love", "coding", "now" };
+    int size = sizeof(dictionary) /sizeof(dictionary[0]);
+    
+    for(int i = 0; i < size; i++)
+        if(dictionary[i].compare(word) == 0)
+            return true;
+    
+    return false;
+}
+
+bool word_break(string str)
+{
+    int size = str.size();
+    if(size == 0)
+        return true;
+    
+    for(int i = 1; i <= size; i++)
+    {
+        if(dictionaryContains(str.substr(0,i)) &&
+                word_break(str.substr(i, size -1)))
+            return true;
+    }
+    return false;
+}
+
+bool word_break_using_dp(string str)
+{
+    int size = str.size();
+    if(size == 0)
+        return true;
+    
+    bool wb[size + 1];
+    memset(wb, 0, sizeof(wb));
+    
+    for(int i = 1; i <= size; i++)
+    {
+        if(wb[i] == false && dictionaryContains(str.substr(0,i)))
+            wb[i] = true;
+        
+        if(wb[i] == true)
+        {
+            if(i == size)
+                return true;
+            for(int j = i+1; j <= size; j++)
+            {
+                if(wb[j] == false && dictionaryContains(str.substr(i, j - 1)))
+                    wb[j] = true;
+                if(j == size && wb[j] == true)
+                    return true;
+            }
+        }
+    }
+}
+
+bool word_break_using_optimum_dp(string str)
+{
+    int n = str.size();
+    if(n == 0)
+        return true;
+    vector<bool> dp(n + 1, 0);
+    vector<int> matched_index;
+    matched_index.push_back(-1);
+    
+    for(int i = 0; i < n; i++)
+    {
+        int msize = matched_index.size();
+        int f = 0;
+        
+        for(int j = msize - 1; j >= 0; j--)
+        {
+            string sb = str.substr(matched_index[j] + 1, i - matched_index[j]);
+            
+            if(dictionaryContains(sb))
+            {
+                f = 1;
+                break;
+            }
+        }
+        if(f == 1)
+        {
+            dp[i] = 1;
+            matched_index.push_back(i);
+        }
+    }
+
+    return dp[n - 1];
+}
+
+bool word_break_using_map_util(unordered_map<string, bool> word_map, string str)
+{
+    int size = str.size();
+    if(size == 0)
+        return true;
+    
+    string temp = "";
+    
+    for(int i = 0; i < size; i++)
+    {
+        temp += str[i];
+        if(word_map.find(temp) != word_map.end() &&
+                word_break_using_map_util(word_map, str.substr(i + 1)))
+            return true;
+    }
+    return false;
+}
+
+string word_break_using_map(string str, vector<string>dictionary)
+{
+    int start = 0;
+    
+    unordered_map<string, bool> word_map;
+    for(auto it : dictionary)
+        word_map[it] = true;
+    return word_break_using_map_util(word_map, str) == true ? "Yes" : "No";
+}
+
+int main() {
+    string str = "ilovecoding";
+    word_break(str) ? cout << "yes \n" : cout << "No" << endl;
+    
+    word_break_using_dp(str) ? cout << "yes \n"  : cout << "No" << endl;
+    
+    word_break_using_optimum_dp(str) ? cout << "yes \n" : cout << "No" << endl;
+    
+    vector<string> dictionary = { "i", "donot", "love", "coding", "now" };
+    cout << word_break_using_map(str, dictionary) << endl;
+	return 0;
+}
