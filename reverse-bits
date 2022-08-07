@@ -1,0 +1,39 @@
+//https://www.geeksforgeeks.org/reverse-actual-bits-given-number/
+#include <iostream>
+using namespace std;
+
+void show_bits(int n)
+{
+    int i,k,andmask;
+    
+    for(i = 15; i >= 0; i--)
+    {
+        andmask = 1 << i;
+        k = n & andmask;
+        k == 0 ? cout << "0" : cout << "1";
+    }
+}
+
+unsigned int reverse_bits(int n)
+{
+    unsigned int rev = 0;
+    
+    while(n > 0)
+    {
+        rev <<= 1;
+        
+        if(n & 1 == 1)
+            rev ^= 1;
+        n >>= 1;
+    }
+    return rev;
+}
+
+int main()
+{
+    unsigned int n = 11;
+    unsigned int rev;
+    
+    rev = reverse_bits(n);
+    show_bits(rev);
+}
