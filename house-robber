@@ -1,0 +1,40 @@
+//https://www.geeksforgeeks.org/find-maximum-possible-stolen-value-houses/
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int maxLoot(int val[], int n)
+{
+    if(n < 0)
+        return 0;
+    if(n == 0)
+        return val[0];
+    
+    int pick = val[n] + maxLoot(val, n - 2);
+    int notPick = maxLoot(val, n - 1);
+    return max(pick, notPick);
+}
+
+int maxLootDp(int val[], int n, vector<int> &dp)
+{
+    if(n < 0)
+        return 0;
+    if( n == 0)
+        return val[0];
+    if(dp[n] != -1)
+        return dp[n];
+    
+    int pick = val[n] + maxLootDp(val, n - 2, dp);
+    int notPick = maxLootDp(val, n - 1, dp);
+    
+    return dp[n] = max(pick, notPick);
+    
+}
+int main()
+{
+    int val[] = { 6, 7, 1, 3, 8, 2, 4 };
+    int n = sizeof(val) / sizeof(val[0]);
+    cout << "Max loot possible = " << maxLoot(val, n - 1);
+    vector<int> dp(n + 1, -1);
+    cout << "Max loot possible = " << maxLootDp(val, n - 1, dp);
+}
