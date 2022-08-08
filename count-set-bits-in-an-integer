@@ -1,0 +1,83 @@
+//https://www.geeksforgeeks.org/count-set-bits-in-an-integer/
+#include <iostream>
+using namespace std;
+
+int countSetBits_1(unsigned int n)
+{
+    unsigned int count = 0;
+    while(n)
+    {
+        count += n & 1;
+        n >>= 1;
+    }
+    return count;
+}
+
+int countSetBits_2(unsigned int n)
+{
+    if(n == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return (n & 1) + countSetBits_2(n >> 1);
+    }
+}
+
+int countSetBits_3(unsigned int n)
+{
+    unsigned int count = 0;
+    while(n)
+    {
+        n &= n - 1;
+        count++;
+    }
+    return count;
+}
+
+int countSetBits_4(unsigned int n)
+{
+    if(n == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1 + countSetBits_4(n & (n - 1));
+    }
+}
+
+int BitSetTable256[256];
+
+void initialize()
+{
+    BitSetTable256[0] = 0;
+    for(int i = 0; i < 256; i++)
+    {
+        BitSetTable256[i] = (i & 1) + BitSetTable256[i / 2];
+    }
+}
+
+int countSetBits_5(unsigned int n)
+{
+    initialize();
+    return BitSetTable256[n & 0xff] + BitSetTable256[(n >> 8) & 0xff] 
+            + BitSetTable256[(n >> 16) & 0xff] + BitSetTable256[n >> 24];
+}
+
+void countSetBits_6(unsigned int n)
+{
+    cout << __builtin_popcount(n) << endl;
+}
+int main() {
+	// your code goes here
+	unsigned int n = 257;
+	cout << countSetBits_1(n) << endl;
+	cout << countSetBits_2(n) << endl;
+	cout << countSetBits_3(n) << endl;
+	cout << countSetBits_4(n) << endl;
+	cout << countSetBits_5(n) << endl;
+	countSetBits_6(n);
+	return 0;
+}
