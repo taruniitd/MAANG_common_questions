@@ -1,3 +1,4 @@
+
 //https://www.geeksforgeeks.org/find-maximum-possible-stolen-value-houses/
 #include <iostream>
 #include <vector>
@@ -30,11 +31,60 @@ int maxLootDp(int val[], int n, vector<int> &dp)
     return dp[n] = max(pick, notPick);
     
 }
+
+int maxLootDp_1(int *val, int n)
+{
+    if(n == 0)
+    {
+        return 0;
+    }
+    
+    if(n == 1)
+        return val[0];
+    if(n == 2)
+        return max(val[0], val[1]);
+        
+    int dp[n];
+    
+    dp[0] = val[0];
+    dp[1] = max(dp[0], dp[1]);
+    
+    for(int i = 2; i < n; i++)
+        dp[i] = max(val[i] + dp[i - 2], dp[i - 1]);
+    
+    return dp[n - 1];
+}
+
+int maxLootEfficient(int *val, int n)
+{
+    if(n == 0)
+        return 0;
+    int value1 = val[0];
+    if(n == 1)
+        return value1;
+    int value2 = max(val[0], val[1]);
+    
+    if(n ==2)
+        return value2;
+    
+    int max_val;
+    for(int i = 2; i  < n; i++)
+    {
+        max_val = max(val[i] + value1, value2);
+        value1 = value2;
+        value2 = max_val;
+    }
+    return max_val;
+}
+
 int main()
 {
-    int val[] = { 6, 7, 1, 3, 8, 2, 4 };
+    int val[] = { 9, 7, 1, 3, 8, 30, 4 };
     int n = sizeof(val) / sizeof(val[0]);
     cout << "Max loot possible = " << maxLoot(val, n - 1);
     vector<int> dp(n + 1, -1);
-    cout << "Max loot possible = " << maxLootDp(val, n - 1, dp);
+    cout << "Max loot possible DP = " << maxLootDp(val, n - 1, dp);
+    vector<int> dp1(n + 1, -1);
+    cout << "Max loot possible DP_1 = " << maxLoot(val, n - 1);
+    cout << "Max loot possible efficient = " << maxLoot(val, n - 1);
 }
