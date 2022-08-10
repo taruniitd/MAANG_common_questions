@@ -1,0 +1,85 @@
+//https://www.tutorialspoint.com/add-and-search-word-data-structure-design-in-cplusplus
+#include <iostream>
+#include <map>
+using namespace std;
+
+typedef struct Node
+{
+    map<char, Node*> child_node_map;
+    bool isEnd;
+    Node()
+    {
+        isEnd = false;
+    }
+} Node;
+
+class WordDictionary
+{
+    Node *head;  
+    public:
+    WordDictionary()
+    {
+        head = new Node;
+    }
+    void insert_node(Node *head, string str)
+    {
+        Node *cur = head;
+        int n = str.size();
+        
+        for(int i = 0; i < n; i++)
+        {
+            char x = str[i];
+            if(!cur->child_node_map[x])
+            {
+                cur->child_node_map[x] = new Node;
+            }
+            cur = cur->child_node_map[x];
+        }
+        cur->isEnd = true;
+    }
+    
+    void addWord(string str)
+    {
+        insert_node(head, str);
+    }
+    
+    bool check_node(Node *cur, string word, int idx = 0)
+    {
+        if(idx == word.size())
+            return cur->isEnd;
+        bool ok = false;
+        if(word[idx] == '.')
+        {
+            for(int i = 0; i < 26; i++)
+            {
+                char x = 'a' + i;
+                if(cur->child_node_map[x] && 
+                        check_node(cur->child_node_map[x], word, idx + 1))
+                    return true;
+            }
+        }
+        else
+        {
+            char x = word[idx];
+            if(cur->child_node_map[x] &&
+                    check_node(cur->child_node_map[x], word, idx + 1))
+                return true;
+        }
+        return false;
+    }
+    bool search(string word)
+    {
+        Node *cur = head;
+        return check_node(cur, word);
+    }
+};
+
+int main()
+{
+    WordDictionary wdObj;
+    wdObj.addWord("Tarun");
+    wdObj.addWord("Neetu");
+    wdObj.addWord("Reyansh");
+    
+    cout << wdObj.search("Reyansh") << endl;
+}
