@@ -1,0 +1,51 @@
+//https://www.geeksforgeeks.org/boggle-find-possible-words-board-characters/
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+
+#define NUM_ROW 3
+#define  NUM_COL 3
+string dictionary[] = { "GEEKS", "FOR", "QUIZ", "GO" };
+int n = sizeof(dictionary) / sizeof(dictionary[0]);
+
+bool isWord(string str)
+{
+    for(int i = 0; i < n; i++)
+        if(str.compare(dictionary[i]) == 0)
+            return true;
+    return false;
+}
+void findWordsUtil(char boggle[NUM_ROW][NUM_COL], bool visited[NUM_ROW][NUM_COL], int i, int j, string &str)
+{
+    visited[i][j] = true;
+    str = str + boggle[i][j];
+    
+    if(isWord(str))
+        cout << str << endl;
+    for(int row = i - 1; row <= i + 1 && row < NUM_ROW; row++)
+        for(int col = j - 1; col <= j + 1 && col < NUM_COL; col++)
+            if(row >= 0 && col >= 0 && !visited[row][col])
+                findWordsUtil(boggle, visited, row, col, str);
+    
+    str.erase(str.length() - 1);
+    visited[i][j] = false;
+}
+void findWords(char boggle[NUM_ROW][NUM_COL])
+{
+    bool visited[NUM_ROW][NUM_COL] = { { false } };
+    string str = " ";
+    for(int i = 0; i < NUM_ROW; i++)
+        for(int j = 0; j < NUM_COL; j++)
+            findWordsUtil(boggle, visited, i, j, str);
+}
+
+int main()
+{
+    char boggle[NUM_ROW][NUM_COL] = { { 'G', 'I', 'J'},
+                    { 'U', 'E', 'K'},
+                    { 'Q', 'S', 'E'} };
+    cout << "following words present in dictionary " << endl;
+    findWords(boggle);
+    return 0;
+}
