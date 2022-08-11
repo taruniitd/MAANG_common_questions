@@ -2,6 +2,7 @@
 //https://www.geeksforgeeks.org/find-duplicates-in-on-time-and-constant-extra-space/
 #include <iostream>
 #include <cmath>
+#include <unordered_set>
 using namespace std;
 
 void printTwoDuplicateNum(int arr[], int arrSize)
@@ -103,6 +104,38 @@ void printTwoDuplicateNumUsingXor(int arr[], int arrSize)
     
 }
 
+void printTwoDuplicateNumUsingNegative(int arr[], int arrSize)
+{
+    for(int i = 0; i < arrSize; i++)
+    {
+        if(arr[abs(arr[i])] > 0)
+            arr[abs(arr[i])] = -arr[abs(arr[i])];
+        else
+            cout << " " << abs(arr[i]) << " ";
+    }
+}
+
+void printTwoDuplicateNumUsingMul(int arr[], int arrSize)
+{
+    int m = arrSize - 1;
+    for(int i = 0; i < arrSize; i++)
+    {
+        arr[arr[i] % (m - 1)] += m;
+        if((arr[arr[i] % (m - 1)] / m) == 2)
+            cout << arr[i] % m << "  ";
+    }
+}
+void printTwoDuplicateNumUsingSet(int arr[], int arrSize)
+{
+    unordered_set<int> s;
+    cout << "two repeating elements " ;
+    for(int i = 0; i < arrSize; i++)
+    {
+        if(s.empty() == false && s.find(arr[i]) != s.end())
+            cout << arr[i] << " ";
+        s.insert(arr[i]);
+    }
+}
 int main()
 {
     int arr[] = { 0, 4, 3, 2, 7, 8, 2, 3 ,1 };
@@ -112,4 +145,9 @@ int main()
     printTwoDuplicateNumUsingCountArray(arr, arrSize);
     printTwoDuplicateNumUsingEquation(arr, arrSize); //wrong working
     printTwoDuplicateNumUsingXor(arr, arrSize); //wrong working
+    cout << endl;
+    printTwoDuplicateNumUsingNegative(arr, arrSize);//wrong working with 0
+    //printTwoDuplicateNumUsingMul(arr, arrSize);
+    printTwoDuplicateNumUsingSet(arr, arrSize);
+    
 }
