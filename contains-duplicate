@@ -1,0 +1,115 @@
+//https://www.geeksforgeeks.org/find-the-two-repeating-elements-in-a-given-array/
+//https://www.geeksforgeeks.org/find-duplicates-in-on-time-and-constant-extra-space/
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+void printTwoDuplicateNum(int arr[], int arrSize)
+{
+    int i, j, display = 0;
+    int visited[arrSize];
+    
+    for(int i = 0; i < arrSize; i++)
+    {
+        if(visited[i] == 1)
+            continue;
+        int count = 0;
+        for(int j = i + 1; j < arrSize; j++)
+        {
+            if(arr[i] == arr[j])
+            {
+                visited[j] = 1;
+                ++count;   
+                break;
+            }
+        }
+        if((count > 0) && (display < 2))
+        {
+            ++display;
+            cout << "repeating element = " << arr[i] << endl;
+        }
+    }
+}
+
+void printTwoDuplicateNumUsingCountArray(int arr[], int arrSize)
+{
+    int *count = new int[sizeof(int) * arrSize - 2];
+    int i;
+    for(i = 0; i < arrSize; i++)
+    {
+        if(count[arr[i]]  == 1)
+            cout << arr[i] << "  ";
+        else
+            count[arr[i]]++;
+    }
+}
+
+int fact(int n)
+{
+    return (n == 0) ? 1 : n * fact(n - 1);
+}
+void printTwoDuplicateNumUsingEquation(int arr[], int arrSize)
+{
+    int S = 0;
+    int P = 1;
+    int x, y;
+    int D;
+    int n = arrSize - 2, i;
+    
+    for(i = 0; i < arrSize; i++)
+    {
+        S = S + arr[i];
+        P = P * arr[i];
+    }
+    
+    S = S - n*(n + 1) /2;
+    P = P / fact(n);
+    
+    D = sqrt(S*S - 4 * P);
+    x = (D + S) / 2;
+    y = (S - D) / 2;
+    cout << "repeating elements are : " << x << "  " << y << endl;
+}
+
+void printTwoDuplicateNumUsingXor(int arr[], int arrSize)
+{
+    int Xor_elem = arr[0];
+    int set_bit_no;
+    int i;
+    int n = arrSize - 2;
+    int x = 0, y = 0;
+    
+    for(int i = 1; i < arrSize; i++)
+        Xor_elem ^= arr[i];
+    for(int i = 1; i <= n; i++)
+        Xor_elem ^= i;
+    set_bit_no = Xor_elem & ~(Xor_elem - 1);
+    
+    for(int i = 0; i < arrSize; i++)
+    {
+        if(arr[i] & set_bit_no)
+            x = x ^ arr[i];
+        else
+            y = y ^ arr[i];
+    }
+    for(i = 1; i <= arrSize; i++)
+    {
+        if(i & set_bit_no)
+            x = x ^ i;
+        else
+            y = y ^ i;
+    }
+    cout << "two repeating no : " << x << "  " << y;
+    
+}
+
+int main()
+{
+    int arr[] = { 0, 4, 3, 2, 7, 8, 2, 3 ,1 };
+    int arrSize = sizeof(arr) / sizeof(arr[0]);
+    
+    printTwoDuplicateNum(arr, arrSize);
+    printTwoDuplicateNumUsingCountArray(arr, arrSize);
+    printTwoDuplicateNumUsingEquation(arr, arrSize); //wrong working
+    printTwoDuplicateNumUsingXor(arr, arrSize); //wrong working
+}
