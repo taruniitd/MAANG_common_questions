@@ -222,6 +222,46 @@ void printMedian(int A[], int size)
     delete left;
     delete right;
 }
+int binarySearch(int arr[], int num, int low, int high)
+{
+    if(low >= high)
+        return (num > arr[low]) ? (low + 1) : low;
+    int mid = (low + high) / 2;
+    if (num == arr[mid])
+        return mid + 1;
+    if(num > arr[mid])
+        return binarySearch(arr, num, mid + 1, high);
+    return binarySearch(arr, num, low, mid -1);
+}
+
+void printMedianWithoutHeap(int arr[], int n)
+{
+    int i, j, pos, num;
+    int count = 1;
+    
+    cout << "Median after reading 1 element is " << arr[0] << endl;
+    for(i = 1; i < n ; i++)
+    {
+        float Median;
+        j = i - 1;
+        num = arr[i];
+        
+        pos = binarySearch(arr, num, 0, j);
+        while(j >= pos)
+        {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = num;
+        count++;
+        if(count % 2 != 0)
+            Median = arr[count / 2];
+        else
+            Median = (arr[(count / 2) -1] + arr[count / 2] ) / 2;
+        cout << "Median after reading i + 1 element is " << Median << endl;
+            
+    }
+}
 
 int main()
 {
@@ -229,4 +269,6 @@ int main()
     int size = ARRAY_SIZE(A);
     
     printMedian(A, size);
+    cout << "Next way : " << endl;
+    printMedianWithoutHeap(A, size);
 }
