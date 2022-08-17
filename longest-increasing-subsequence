@@ -2,6 +2,8 @@
 //https://www.geeksforgeeks.org/longest-increasing-subsequence-dp-3/#:~:text=The%20Longest%20Increasing%20Subsequence%20(LIS)%20problem%20is%20to%20find%20the,50%2C%2060%2C%2080%7D.
 #include <iostream>
 #include <vector>
+#include <set>
+#include <climits>
 #include <algorithm>
 using namespace std;
 int CeilIndex(vector<int> &tmp_vec, int left, int right, int cur_key)
@@ -103,6 +105,66 @@ int LongIncrSubSeqDP(vector<int> &cur_vec, int n)
     return *max_element(lis, lis + n);
 }
 
+int LongIncrSubSeqDP_1(vector<int> &cur_vec, int n)
+{
+    vector<int> b;
+    set<int> s;
+    
+    set<int>::iterator it;
+    
+    for(int i = 0; i < n; i++)
+    {
+        s.insert(cur_vec[i]);
+    }
+    
+    for(it = s.begin(); it != s.end(); it++)
+        b.push_back(*it);
+    int m = b.size(), i , j;
+    int dp[m+1][n+1];
+    
+    for(i = 0; i < m + 1; i++)
+        for(j = 0; j < n + 1; j++)
+            dp[i][j] = -1;
+    for(i = 0; i < m + 1; i++)
+    {
+        for(j = 0; j < n + 1; j++)
+        {
+            if(i == 0 || j == 0)
+            {
+                dp[i][j] = 0;
+            }
+            else if(cur_vec[j -1] == b[i - 1])
+            {
+                dp[i][j] = 1 + dp[i - 1][j - 1];
+            }
+            else
+            {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    return dp[m][n];
+}
+
+int f(int idx, int prev_idx, int n, vector<int> & cur_vec, vector<vector<int>> &dp)
+{
+    if(idx == n)
+        return 0;
+    if(dp[idx][prev_idx + 1] != -1)
+        return dp[idx][prev_idx + 1];
+    int notTake = 0 + f(idx + 1, prev_idx, n, cur_vec, dp);
+    int take = INT_MIN;
+    if(prev_idx == -1 || cur_vec[idx] > cur_vec[prev_idx])
+        take = 1 + f(idx + 1, idx, n, cur_vec, dp);
+    return dp[idx][prev_idx + 1] = max(take, notTake);
+}
+
+int LongIncrSubSeqDP_2(vector<int> & cur_vec, int n)
+{
+    vector<vector<int>> dp(n + 1, vector<int>(n+1, -1)) ;
+    return f(0, -1, n, cur_vec, dp);
+}
+
 int main()
 {
     vector<int> cur_vec{2, 5, 3, 7, 11, 8, 10, 13, 6 };
@@ -119,5 +181,13 @@ int main()
     cout << "Use New Method 4: "; 
     vector<int> cur_vec_3{2, 5, 3, 7, 11, 8, 10, 13, 6 };
     cout << "length of longest subsequence = " << LongIncrSubSeqDP(cur_vec_3, cur_vec_3.size());
+    cout << endl;
+    cout << "Use New Method 5: "; 
+    vector<int> cur_vec_4{2, 5, 3, 7, 11, 8, 10, 13, 6 };
+    cout << "length of longest subsequence = " << LongIncrSubSeqDP_1(cur_vec_4, cur_vec_4.size());
+    cout << endl;
+    cout << "Use New Method 6: "; 
+    vector<int> cur_vec_5{2, 5, 3, 7, 11, 8, 10, 13, 6 };
+    cout << "length of longest subsequence = " << LongIncrSubSeqDP_2(cur_vec_5, cur_vec_5.size());
     return 0;
 }
