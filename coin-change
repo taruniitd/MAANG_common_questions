@@ -1,0 +1,89 @@
+//https://www.geeksforgeeks.org/coin-change-dp-7/
+#include <iostream>
+#include <cstring>
+#include <vector>
+using namespace std;
+
+int countNumWays(int coinsArr[], int numCoins, int finalSum)
+{
+    if(finalSum == 0)
+        return 1;
+    if(finalSum < 0)
+        return 0;
+    if(numCoins <= 0)
+        return 0;
+    return countNumWays(coinsArr, numCoins - 1, finalSum) + 
+            countNumWays(coinsArr, numCoins, finalSum - coinsArr[numCoins - 1]);
+}
+
+int countNumWaysUsingDP_overlapSub(int coinsArr[], int numCoins, int finalSum)
+{
+    int i, j, x, y;
+    
+    int table[finalSum + 1][numCoins];
+    
+    for(i = 0; i < numCoins; i++)
+        table[0][i] = 1;
+    for(i = 1; i < finalSum + 1; i++)
+    {
+        for(j = 0; j < numCoins; j++)
+        {
+            x = (i - coinsArr[j] >= 0) ? table[i - coinsArr[j]][j] : 0;
+            y = (j >= 1) ? table[i][j - 1] : 0;
+            table[i][j] = x + y;
+        }
+    }
+    return table[finalSum][numCoins - 1];
+}
+
+int countNumWaysUsingDP_overlapSub_1(int coinsArr[], int numCoins, int finalSum)
+{
+    int table[finalSum + 1];
+    memset(table, 0, sizeof(table));
+    
+    table[0] = 1;
+    for(int i = 0; i < numCoins; i++)
+    {
+        for(int j = coinsArr[i]; j <= finalSum; j++)
+        {
+            table[j] += table[j - coinsArr[i]];
+        }
+    }
+    return table[finalSum];
+}
+
+int countNumWaysUsingDP_memoization(int coinsArr[], int numCoins, int finalSum, 
+        vector<vector<int>> &dp)
+{
+    if(finalSum == 0)
+        return dp[numCoins][finalSum] = 1;
+    if(numCoins == 0)
+        return 0;
+    if(dp[numCoins][finalSum] != -1)
+        return dp[numCoins][finalSum];
+    if(coinsArr[numCoins - 1] <= finalSum)
+    {
+        return dp[numCoins][finalSum] = 
+            countNumWaysUsingDP_memoization(coinsArr, numCoins, finalSum - coinsArr[numCoins - 1], dp) +
+            countNumWaysUsingDP_memoization(coinsArr, numCoins - 1, finalSum, dp);
+    }
+    else
+    {
+        return dp[numCoins][finalSum] = 
+            countNumWaysUsingDP_memoization(coinsArr, numCoins - 1, finalSum, dp);
+    }
+}   
+
+int main() {
+	int i , j;
+	int coinsArr[] = { 1, 2, 3 };
+	int numCoins = sizeof(coinsArr) / sizeof(coinsArr[0]);
+	int finalSum = 4;
+	cout << "  " << "Total Number of ways for having sum : " << countNumWays(coinsArr, numCoins, finalSum)<< endl;
+	cout << "  " << "Total Number of ways for having sum : " << countNumWaysUsingDP_overlapSub(coinsArr, numCoins, finalSum) << endl;
+	cout << "  " << "Total Number of ways for having sum : " << countNumWaysUsingDP_overlapSub_1(coinsArr, numCoins, finalSum) << endl;
+    vector<vector<int>> dp(numCoins + 1, vector<int>(finalSum + 1, -1));
+    cout << "  " << "Total Number of ways for having sum : " << countNumWaysUsingDP_memoization(coinsArr, numCoins, finalSum, dp) << endl;
+	
+	return 0;
+}
