@@ -1,0 +1,63 @@
+//https://www.geeksforgeeks.org/priority-queue-in-cpp-stl/
+#include <iostream>
+#include <algorithm>
+#include <unordered_map>
+#include <queue>
+#include <vector>
+
+using namespace std;
+
+bool compare(pair<int,int> p1, pair<int,int> p2)
+{
+    if(p1.second == p2.second)
+        return p1.first > p2.first;
+    return p1.second > p2.second;
+}
+
+void print_N_most_freq_num(int arr[], int N, int K)
+{
+    unordered_map<int,int> u_map;
+    for(int i = 0; i < N; i++)
+        u_map[arr[i]]++;
+    vector<pair<int,int>> freq_arr(u_map.begin(), u_map.end());
+    sort(freq_arr.begin(), freq_arr.end(),compare);
+    cout << K << " num with most occurence : ";
+    for(int i = 0; i < K; i++)
+        cout << freq_arr[i]. first << "  ";
+}
+
+struct compare_1
+{
+    bool operator() (pair<int,int> p1, pair<int,int> p2)
+    {
+        if (p1.second == p2.second)
+            return p1.first < p2.first;
+        return p1.second < p2.second;
+    }
+};
+void print_N_most_freq_num_using_priorityQueue(int arr[], int N, int K)
+{
+    unordered_map<int,int> u_map;
+    for(int i = 0; i < N; i++)
+        u_map[arr[i]]++;
+    priority_queue<pair<int,int>, vector<pair<int,int>>, compare_1> pq(u_map.begin(), u_map.end());
+    cout << K << " num with most occurence : ";
+    for(int i = 0; i < K; i++)
+    {
+        cout << pq.top().first << "  ";
+        pq.pop();
+    }
+        
+}
+
+int main()
+{
+    int arr[] = {3, 1, 4, 4, 5, 2, 6, 1};
+    int N = sizeof(arr) / sizeof(arr[0]);
+    
+    int K = 2;
+    
+    print_N_most_freq_num(arr, N, K);
+    cout << endl;
+    print_N_most_freq_num_using_priorityQueue(arr, N, K);
+}
