@@ -1,0 +1,230 @@
+//https://www.geeksforgeeks.org/count-total-set-bits-in-all-numbers-from-1-to-n/
+#include <iostream>
+#include <cmath>
+using namespace std;
+ 
+// A utility function to count set bits
+// in a number x
+unsigned int countSetBitsUtil(unsigned int x);
+ 
+// Returns count of set bits present in all
+// numbers from 1 to n
+unsigned int countSetBits(unsigned int n)
+{
+    int bitCount = 0; // initialize the result
+ 
+    for (int i = 1; i <= n; i++)
+        bitCount += countSetBitsUtil(i);
+ 
+    return bitCount;
+}
+ 
+// A utility function to count set bits
+// in a number x
+unsigned int countSetBitsUtil(unsigned int x)
+{
+    if (x <= 0)
+        return 0;
+    return (x % 2 == 0 ? 0 : 1) + countSetBitsUtil(x / 2);
+}
+ 
+ int countSetBitsUsingFlip(int n)
+{
+    int i = 0;
+ 
+    // ans store sum of set bits from 0 to n 
+    int ans = 0;
+ 
+    // while n greater than equal to 2^i
+    while ((1 << i) <= n) {
+ 
+        // This k will get flipped after
+        // 2^i iterations
+        bool k = 0;
+ 
+        // change is iterator from 2^i to 1
+        int change = 1 << i;
+ 
+        // This will loop from 0 to n for
+        // every bit position
+        for (int j = 0; j <= n; j++) {
+ 
+            ans += k;
+ 
+            if (change == 1) {
+                k = !k; // When change = 1 flip the bit
+                change = 1 << i; // again set change to 2^i
+            }
+            else {
+                change--;
+            }
+        }
+ 
+        // increment the position
+        i++;
+    }
+ 
+    return ans;
+}
+
+unsigned int getLeftmostBit(int n)
+{
+    int m = 0;
+    while (n > 1)
+    {
+        n = n >> 1;
+        m++;
+    }
+    return m;
+}
+ 
+/* Given the position of previous leftmost
+set bit in n (or an upper bound on
+leftmost position) returns the new
+position of leftmost set bit in n */
+unsigned int getNextLeftmostBit(int n, int m)
+{
+    unsigned int temp = 1 << m;
+    while (n < temp) {
+        temp = temp >> 1;
+        m--;
+    }
+    return m;
+}
+ 
+// The main recursive function used by countSetBits()
+unsigned int _countSetBits(unsigned int n, int m);
+ 
+// Returns count of set bits present in
+// all numbers from 1 to n
+unsigned int countSetBitsUsingRecursiveFormula(unsigned int n)
+{
+    // Get the position of leftmost set
+    // bit in n. This will be used as an
+    // upper bound for next set bit function
+    int m = getLeftmostBit(n);
+ 
+    // Use the position
+    return _countSetBits(n, m);
+}
+ 
+unsigned int _countSetBits(unsigned int n, int m)
+{
+    // Base Case: if n is 0, then set bit
+    // count is 0
+    if (n == 0)
+        return 0;
+ 
+    /* get position of next leftmost set bit */
+    m = getNextLeftmostBit(n, m);
+ 
+    // If n is of the form 2^x-1, i.e., if n
+    // is like 1, 3, 7, 15, 31, .. etc,
+    // then we are done.
+    // Since positions are considered starting
+    // from 0, 1 is added to m
+    if (n == ((unsigned int)1 << (m + 1)) - 1)
+        return (unsigned int)(m + 1) * (1 << m);
+ 
+    // update n for next recursive call
+    n = n - (1 << m);
+    return (n + 1) + countSetBits(n) + m * (1 << (m - 1));
+}
+
+int countSetBitsUsingFormula(int N){
+    int two = 2,ans = 0;
+    int n = N;
+    while(n){
+        ans += (N/two)*(two>>1);
+        if((N&(two-1)) > (two>>1)-1) ans += (N&(two-1)) - (two>>1)+1;
+        two <<= 1;
+        n >>= 1;
+    }
+    return ans;
+}
+
+int findLargestPower(int n)
+{
+    int x = 0;
+    while ((1 << x) <= n)
+        x++;
+    return x - 1;
+}
+ 
+int countSetBitsUsingFormula_2(int n)
+{
+    if (n <= 1)
+        return n;
+    int x = findLargestPower(n);
+    return (x * pow(2, (x - 1))) + (n - pow(2, x) + 1) + countSetBits(n - pow(2, x));
+}
+
+int GetLeftMostSetBit(int n){
+    int pos = 0;
+     
+    while(n>0){
+        pos++;
+        n>>=1;
+    }
+     
+    return pos;
+}
+ 
+int countSetBitsUsingFormula_3(int n){
+    int leftMostSetBitInd = GetLeftMostSetBit(n);   
+     
+    int totalRep, mod;
+    int nearestPow;
+    int totalSetBitCount = 0;
+    int addRemaining=0;
+     
+    int curr=0; // denotes the number of set bits at index i
+     
+    //cout<<"leftMostSetBitInd: "<<leftMostSetBitInd<<endl;
+     
+    for(int i=1; i<=leftMostSetBitInd; ++i){
+        nearestPow = pow(2, i);
+        if(nearestPow>n){
+            int lastPow = pow(2, i-1);
+            mod = n%lastPow;
+            totalSetBitCount += mod+1;
+        }
+        else{           
+            if(i==1 && n%2==1){
+                totalRep = (n+1)/nearestPow;
+                mod = nearestPow%2;
+                addRemaining =  0;
+            }
+            else{
+                totalRep = n/nearestPow;
+                mod = n%nearestPow;
+                 
+                if(mod >= (nearestPow/2)){
+                    addRemaining = mod - (nearestPow/2) + 1;
+                }else{
+                    addRemaining = 0;
+                }
+            }
+             
+            curr = totalRep*(nearestPow/2) + addRemaining;
+            totalSetBitCount += curr;
+        }
+        // debug output at each iteration
+        //cout<<i<<" "<<nearestPow<<" "<<totalRep<<" "<<mod<<" "<<totalSetBitCount<<" "<<curr<<endl;
+    }
+     
+    return totalSetBitCount;
+}
+// Driver program to test above functions
+int main()
+{
+    int n = 4;
+    cout <<"Total set bit count is " <<countSetBits(n) << endl;
+    cout <<"Total set bit count is " <<countSetBitsUsingFlip(n) << endl;
+    cout <<"Total set bit count is " <<countSetBitsUsingFormula(n) << endl;
+    cout <<"Total set bit count is " <<countSetBitsUsingRecursiveFormula(n) << endl;
+    cout <<"Total set bit count is " <<countSetBitsUsingFormula_2(n) << endl;
+    cout <<"Total set bit count is " <<countSetBitsUsingFormula_3(n) << endl;
+    return 0;
+}
+ 
