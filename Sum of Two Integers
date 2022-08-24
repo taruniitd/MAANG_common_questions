@@ -1,0 +1,41 @@
+//https://www.geeksforgeeks.org/add-two-numbers-without-using-arithmetic-operators/
+#include <iostream>
+using namespace std;
+
+int add(int a, int b)
+{
+    for(int i = 0; i < b; i++)
+        a++;
+    return a;
+}
+int addUsingXorAdd(int a, int b)
+{
+    //int loop = 0;
+    unsigned carry;
+    while( b != 0)
+    {
+         carry = a & b;
+        a = a^b;
+        b = carry << 1;
+        //loop++;
+    }
+    //cout << loop << endl;
+    return a;
+}
+
+int addUsingXorAddUsingRecursion(int a, int b)
+{
+    if(b == 0)    
+        return a;
+    else
+        return addUsingXorAddUsingRecursion(a^b, (unsigned) (a&b) << 1);
+}
+
+int main() {
+	// your code goes here
+	int a = add(62,15);
+	cout << a << endl;
+	cout << "res : " << addUsingXorAdd(62,15) << endl;
+	cout << "res : " << addUsingXorAddUsingRecursion(62,15) << endl;
+	return 0;
+}
